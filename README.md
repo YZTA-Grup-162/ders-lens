@@ -1,15 +1,345 @@
-# attention-pulse
-# Takım İsmi
 
-# Takım Rolleri
-- Product Owner: Başak Dilara Çevik
-- Scrum Masrer: Süleyman Kayyum Buberka
-- Developer: Enes Yıldırım
-- Developer: Hümeyra Betül Şahin
-- Developer: Muhammed Enes Güler
 
-# Ürün İsmi
-# Ürün Açıklaması
-# Ürün Özellikleri
-# Hedef Kitle
-# Product Backlog
+# AttentionPulse
+
+Web tabanlı gerçek zamanlı öğrenci dikkat analizi sistemi. Webcam görüntülerinden öğrenci dikkat seviyelerini tespit eder ve öğretmenlere anlık geri bildirim sağlar.
+
+## Takım Rolleri
+
+**Product Owner:** Başak Dilara Çevik  
+**Scrum Master:** Süleyman Kayyum Buberka  
+**Developers:** Enes Yıldırım, Hümeyra Betül Şahin, Muhammed Enes Güler
+
+## Ürün Özellikleri
+
+- Webcam görüntülerinden gerçek zamanlı dikkat seviyesi tespiti
+- Öğrenci ve öğretmen için ayrı web arayüzleri  
+- OpenCV ve MediaPipe tabanlı yüz analizi
+- RESTful API ve WebSocket desteği
+- Docker ile kolay deployment
+
+## Ürün Açıklaması
+
+
+## Hedef Kitle
+
+## Product Backlog
+
+
+## Tech Stack
+
+**Backend:** FastAPI, Python 3.9+, OpenCV, MediaPipe  
+**Frontend:** React 18, TypeScript, Tailwind CSS  
+**Database:** SQLite (development), PostgreSQL (production)  
+**Deployment:** Docker, Docker Compose
+
+## Proje Yapısı
+
+```
+attention-pulse/
+├── backend/              # FastAPI backend
+│   ├── app/
+│   │   ├── models/       # AI models
+│   │   ├── api/          # API endpoints
+│   │   ├── core/         # Core logic
+│   │   └── utils/        # Utility functions
+│   ├── requirements.txt
+│   └── Dockerfile
+├── frontend/             # React frontend
+│   ├── src/
+│   │   ├── components/   # React components
+│   │   ├── pages/        # Pages
+│   │   └── services/     # API services
+│   ├── package.json
+│   └── Dockerfile
+├── docs/                 # Documentation
+├── scripts/              # Deployment scripts
+└── docker-compose.yml    # Multi-container setup
+```
+
+
+## API Endpoints
+
+### System
+- `GET /` - Sistem durumu
+- `GET /health` - Sistem sağlık kontrolü
+- `GET /docs` - API dokümantasyonu
+
+### Authentication
+- `POST /api/auth/login` - Kullanıcı girişi
+- `POST /api/auth/register` - Kullanıcı kaydı
+- `GET /api/auth/me` - Mevcut kullanıcı bilgisi
+
+### Student
+- `POST /api/student/session/start` - Öğrenme oturumu başlatma
+- `POST /api/student/session/{session_id}/end` - Oturum sonlandırma
+- `POST /api/student/video/frame` - Video karesi gönderme
+- `GET /api/student/attention/score` - Dikkat skoru alma
+- `GET /api/student/attention/history` - Dikkat geçmişi
+- `GET /api/student/feedback` - Geri bildirim alma
+- `GET /api/student/sessions` - Kullanıcı oturumları
+
+### Teacher
+- `POST /api/teacher/session/start` - Öğretmen oturumu başlatma
+- `POST /api/teacher/session/{session_id}/end` - Öğretmen oturumu sonlandırma
+- `GET /api/teacher/students` - Öğrenci listesi
+- `GET /api/teacher/overview` - Sınıf genel durumu
+- `GET /api/teacher/session/{id}/analytics` - Oturum analizi
+- `GET /api/teacher/alerts` - Gerçek zamanlı uyarılar
+- `POST /api/teacher/alerts/{alert_id}/acknowledge` - Uyarı onaylama
+- `GET /api/teacher/analytics/summary` - Analiz özeti
+- `GET /api/teacher/students/{student_id}/profile` - Öğrenci profili
+
+### WebSocket
+- `/ws/system` - Sistem güncellemeleri
+- `/ws/student/{session_id}` - Öğrenci gerçek zamanlı veri
+- `/ws/teacher/{class_id}` - Öğretmen izleme
+
+
+
+## Hızlı Başlangıç
+
+### Kurulum
+```powershell
+git clone https://github.com/YZTA-Grup-162/attention-pulse.git
+cd attention-pulse
+docker-compose up --build
+```
+
+**Kurulum Tamamlandıktan Sonra:**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000  
+- API Docs: http://localhost:8000/docs
+
+### ✅ Kurulum Doğrulama
+```powershell
+powershell -ExecutionPolicy Bypass -File quick_test.ps1
+```
+
+
+### Önkoşullar (Windows)
+
+#### Docker ile çalıştırmak için:
+1. **Docker Desktop** indirin ve kurun: [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
+2. Kurulum sonrası bilgisayarı yeniden başlatın
+3. Docker Desktop'ı açın ve çalıştığından emin olun
+
+#### Manuel kurulum için:
+1. **Python 3.9+**: [Python Downloads](https://www.python.org/downloads/)
+2. **Node.js 18+**: [Node.js Downloads](https://nodejs.org/)
+3. **Git**: [Git for Windows](https://git-scm.com/download/win)
+
+### Docker ile Tek Adımda Kurulum (Önerilen)
+```powershell
+# Windows PowerShell için:
+git clone https://github.com/YZTA-Grup-162/attention-pulse.git
+cd attention-pulse
+docker-compose up --build
+
+# Kurulum testi (opsiyonel):
+powershell -ExecutionPolicy Bypass -File quick_test.ps1
+```
+
+### Manuel kurulum (Docker yoksa)
+```powershell
+# Repository'yi clone edin
+git clone https://github.com/YZTA-Grup-162/attention-pulse.git
+cd attention-pulse
+
+# Backend kurulumu
+py -m venv venv
+venv\Scripts\activate
+pip install -r backend/requirements.txt
+pip install email-validator pydantic[email]
+
+# Backend başlatma (yeni terminal açın)
+cd d:\attention-pulse
+venv\Scripts\activate
+python backend/run_server.py
+
+# Frontend kurulumu (başka bir terminal açın)
+cd frontend
+# NPM çalışıyorsa:
+npm install
+npm start
+
+# NPM çalışmıyorsa Yarn kullanın:
+yarn install
+yarn start
+```
+
+**Erişim:** 
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8000`
+- API Docs: `http://localhost:8000/docs`
+
+### Sorun Giderme (Windows)
+
+#### Docker Desktop bağlantı hatası:
+```powershell
+# Hata: "unable to get image" veya "dockerDesktopLinuxEngine" bulunamıyor
+# 1. Docker Desktop'ın çalıştığından emin olun
+docker --version
+
+# 2. Docker Desktop açık değilse, Start menüsünden başlatın
+# 3. Docker Desktop'ta "Engine running" yazısını bekleyin
+
+# 4. Docker servisinin çalıştığını kontrol edin:
+docker ps
+
+# 5. Çalışmıyorsa Docker Desktop'ı yeniden başlatın
+# Start Menu > Docker Desktop > Restart
+```
+
+#### Docker Compose version uyarısı:
+```yaml
+# docker-compose.yml dosyasından version satırını kaldırın:
+# version: '3.8'  # Bu satırı silin veya yorum satırı yapın
+```
+
+#### Python bulunamıyor hatası:
+```powershell
+# Python'un PATH'e eklendiğinden emin olun
+python --version
+# Çalışmıyorsa, Python'u Microsoft Store'dan kurun
+```
+
+#### NPM bulunamıyor hatası:
+```powershell
+# Node.js kurulu olduğundan emin olun
+node --version
+
+# NPM hata veriyorsa alternatif paket yöneticisi kullanın:
+# 1. Yarn kurun (önerilen):
+npm install -g yarn
+
+
+# 2. Yarn ile frontend kurun:
+cd frontend
+yarn install
+yarn start
+
+# 3. Veya NPM'i yeniden kurun:
+# Node.js'i tamamen kaldırıp tekrar kurun: https://nodejs.org/
+```
+
+#### Virtual environment aktivasyon sorunu:
+```powershell
+# PowerShell execution policy sorunu varsa:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Sonra tekrar deneyin:
+venv\Scripts\activate
+```
+
+#### Docker build hatası (frontend):
+```powershell
+# Frontend'de package-lock.json eksikse:
+cd frontend
+
+# Önce src klasörünü kontrol edin, yoksa oluşturun
+# Eğer frontend kaynak kodu eksikse:
+git pull origin main  # Son sürümü çekin
+
+# Veya manuel olarak:
+npm install  # package-lock.json oluşturur
+npm run build  # Build test edin
+
+# Docker build için:
+# Dockerfile'da "npm ci" yerine "npm install" kullanın
+```
+```powershell
+# Port 8000 kullanımda ise farklı port kullanın:
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
+
+# Port 3000 kullanımda ise:
+# package.json'da port değiştirin veya:
+set PORT=3001 && npm start
+```
+
+#### Docker Desktop bağlantı hatası:
+```
+unable to get image: error during connect: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+```
+
+**Çözüm adımları:**
+1. Docker Desktop'ın tamamen çalıştığından emin olun (sistem tepsisinde whale ikonu)
+2. Docker Desktop'ı yeniden başlatın: Sağ tık → "Restart Docker Desktop"
+3. Windows'u yeniden başlatın
+4. Docker servisi kontrolü:
+```powershell
+# Docker Desktop çalışıyor mu kontrol et:
+docker version
+
+# Çalışmıyorsa Manuel başlatma:
+"C:\Program Files\Docker\Docker\Docker Desktop.exe"
+```
+
+#### Docker Compose version uyarısı:
+```
+the attribute `version` is obsolete, it will be ignored
+```
+
+**docker-compose.yml** dosyasının başındaki `version:` satırını kaldırın:
+```yaml
+# Bu satırı silin:
+# version: '3.8'
+
+# Doğrudan services ile başlayın:
+services:
+  backend:
+    ...
+```
+
+#### Docker tamamen çalışmıyorsa alternatif:
+Manuel kurulum yöntemini kullanın (yukarıdaki "Manuel kurulum" bölümüne bakın)
+
+## Development
+
+### OpenCV test (Backend çalıştıktan sonra)
+```powershell
+cd backend
+venv\Scripts\activate
+python app/utils/opencv_utils.py
+```
+
+### Code quality
+```powershell
+# Backend
+cd backend
+venv\Scripts\activate
+black app/
+flake8 app/
+
+# Frontend
+cd frontend
+npm run lint
+npm run format
+```
+
+### Hızlı başlatma script'i (Windows)
+Proje klasöründe `start.bat` oluşturun:
+```batch
+@echo off
+echo AttentionPulse başlatılıyor...
+
+echo Virtual environment aktive ediliyor...
+call venv\Scripts\activate
+
+echo Backend başlatılıyor...
+start cmd /k "cd /d %~dp0 && venv\Scripts\activate && python backend\run_server.py"
+
+timeout /t 5
+
+echo Frontend başlatılıyor...
+start cmd /k "cd /d frontend && yarn install && yarn start"
+
+echo Backend: http://localhost:8000
+echo Frontend: http://localhost:3000  
+echo API Docs: http://localhost:8000/docs
+pause
+```
+
+---
+
+*Çevrimiçi eğitim için computer vision tabanlı dikkat takip sistemi.*
