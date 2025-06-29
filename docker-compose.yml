@@ -1,0 +1,76 @@
+# version: '3.8'  # Docker Compose v2'de artık gerekli değil
+
+services:
+  # Backend API Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: attention-pulse-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - backend_uploads:/app/uploads
+      - backend_models:/app/models
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://postgres:password@db:5432/attention_pulse
+      - SECRET_KEY=PRODUCTION_SECRET_KEY
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - attention-pulse-network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: attention-pulse-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - attention-pulse-network
+
+  # Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: attention-pulse-db
+    environment:
+      - POSTGRES_DB=attention_pulse
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - attention-pulse-network
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: attention-pulse-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - attention-pulse-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  backend_uploads:
+  backend_models:
+
+networks:
+  attention-pulse-network:
+    driver: bridge
