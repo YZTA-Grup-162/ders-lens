@@ -18,12 +18,21 @@ Web tabanlı gerçek zamanlı öğrenci dikkat analizi sistemi. Webcam görünt�
 - RESTful API ve WebSocket desteği
 - Docker ile kolay deployment
 
+## Ürün Logosu
+
 ## Ürün Açıklaması
 
 
 ## Hedef Kitle
 
 ## Product Backlog
+---
+
+## Sprint 1
+**Sprint Notları:**  
+**Sprint içinde tamamlanması tahmin edilen puan:** 100 Puan  
+**Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde ilk sprintin 100 ile başlaması gerektiği kararlaştırıldı.  
+**Backlog düzeni ve Story seçimleri:** Ürün backlog'umuz, kullanıcı deneyimini destekleyecek mekanik ve içeriklere öncelik verilerek yapılandırılmıştır.Sprint başına tahmin edilen puan sayısını geçmeyecek şekilde görevler dağıtılmıştır.
 
 
 ## Tech Stack
