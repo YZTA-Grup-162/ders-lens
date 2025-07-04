@@ -4,7 +4,7 @@
 
 Web tabanlı gerçek zamanlı öğrenci dikkat analizi sistemi. Webcam görüntülerinden öğrenci dikkat seviyelerini tespit eder ve öğretmenlere anlık geri bildirim sağlar.
 ## Takım İsmi
-Grup_162
+Grup 162
 ## Takım Rolleri
 
 **Product Owner:** Başak Dilara Çevik  
