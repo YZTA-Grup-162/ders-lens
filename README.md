@@ -3,12 +3,25 @@
 # AttentionPulse
 
 Web tabanlı gerçek zamanlı öğrenci dikkat analizi sistemi. Webcam görüntülerinden öğrenci dikkat seviyelerini tespit eder ve öğretmenlere anlık geri bildirim sağlar.
-
+## Takım İsmi
+Grup_162
 ## Takım Rolleri
 
 **Product Owner:** Başak Dilara Çevik  
 **Scrum Master:** Süleyman Kayyum Buberka  
 **Developers:** Enes Yıldırım, Hümeyra Betül Şahin, Muhammed Enes Güler
+## Ürün İsmi
+DersLens
+
+
+
+## Ürün Logosu
+<img src="https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Logo.png?raw=true" alt="" width="200" />
+
+
+## Ürün Açıklaması
+
+DersLens, eğitimde verimliliği ve öğrenci başarısını artırmak amacıyla geliştirilmiş, mahremiyeti temel alan web tabanlı bir yapay zekâ platformudur. Sistemin en temel özelliği, video görüntülerinin asla sunucularımıza kaydedilmemesi; tüm analizlerin doğrudan kullanıcının kendi tarayıcısı (browser) üzerinde gerçekleşmesidir. Platform, bu güvenli yaklaşımla öğrencilerin dikkat, duygu ve davranışlarını anlık olarak analiz eder ve yalnızca bu analizin anonim sayısal çıktılarını öğretmenler için anlamlı geri bildirimlere dönüştürür.
 
 ## Ürün Özellikleri
 
@@ -18,22 +31,22 @@ Web tabanlı gerçek zamanlı öğrenci dikkat analizi sistemi. Webcam görünt�
 - RESTful API ve WebSocket desteği
 - Docker ile kolay deployment
 
-## Ürün Logosu
-
-## Ürün Açıklaması
-
 
 ## Hedef Kitle
+
+Lise ve üniversite çağındaki öğrencilerinin dikkatini ve derse odaklanmasını teknolojiyle artırarak onların akademik yeterliliklerini en üst düzeye çıkarmayı hedefleyen yenilikçi eğitim kurumlarıdır.
 
 ## Product Backlog
 ---
 
 ## Sprint 1
-**Sprint Notları:**  
+
 **Sprint içinde tamamlanması tahmin edilen puan:** 100 Puan  
 **Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde ilk sprintin 100 ile başlaması gerektiği kararlaştırıldı.  
 **Backlog düzeni ve Story seçimleri:** Ürün backlog'umuz, kullanıcı deneyimini destekleyecek mekanik ve içeriklere öncelik verilerek yapılandırılmıştır.Sprint başına tahmin edilen puan sayısını geçmeyecek şekilde görevler dağıtılmıştır.
 ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Sprint_1.png?raw=true)
+Daily Scrum toplantıları, Google Meet üzerinden yapıldı. Örneklerin bazıları toplanti-notlari dosyasında Tarih.md belgelerinden ulaşabilirsiniz. 
+https://github.com/YZTA-Grup-162/ders-lens/tree/main/toplanti-notlari
 
 ## Tech Stack
 
