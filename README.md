@@ -50,14 +50,16 @@ Daily Scrum toplantıları, Google Meet üzerinden yapıldı. Örneklerin bazıl
 https://github.com/YZTA-Grup-162/ders-lens/tree/main/toplanti-notlari
 
 **Sprint Retrospective:**
-
+- Backend altyapısı kuruldu.
+- Database tasarımında temel tablolar oluşturuldu.
+- Ekip içi görev dağılımı netleşti.
 - Toplantıların iki günde bir yapılmasına karar verildi.
-
-- Yapılan çalışmaların özetlerinin birkaç cümle ile özetlenip toplantı notlarına eklenmesine karar verildi.
+- Yapılan çalışmaların birkaç cümle ile özetlenip toplantı notlarına eklenmesine karar verildi.
 
 **Sprint Review:**
 
 - Ekip, tamamlanan proje kısımlarını ve bu konudaki geri bildirimlerini paylaştı. Projenin geleceğe yönelik nasıl geliştirilebileceği üzerine görüşmeler yapıldı.
+- Docker kullanımı sayesinde geliştirme ortamları eşitlendi.
 - Sprint Review katılımcıları: Başak Dilara Çevik,Süleyman Kayyum Buberka, Enes Yıldırım, Hümeyra Betül Şahin, Muhammed Enes Güler
 
 ## Tech Stack
