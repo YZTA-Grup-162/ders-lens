@@ -44,22 +44,23 @@ https://github.com/orgs/YZTA-Grup-162/projects/1
 
 **Sprint içinde tamamlanması tahmin edilen puan:** 100 Puan  
 **Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde ilk sprintin 100 ile başlaması gerektiği kararlaştırıldı.  
-**Backlog düzeni ve Story seçimleri:** Ürün backlog'umuz, kullanıcı deneyimini destekleyecek mekanik ve içeriklere öncelik verilerek yapılandırılmıştır.
+**Backlog düzeni ve Story seçimleri:** Ürün backlog'umuz, kullanıcı deneyimini destekleyecek mekanik ve içeriklere öncelik verilerek yapılandırılmıştır. Sprint Board üzerinde görünen etiketler frontend, backend, görüntü işleme, model, devops (sunucu vb. işler için) ve R&D şeklindedir.
+https://github.com/orgs/YZTA-Grup-162/projects/1
 ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Sprint_1.png?raw=true)
 Daily Scrum toplantıları, Google Meet üzerinden yapıldı. Örneklerin bazıları toplanti-notlari dosyasında Tarih.md belgelerinden ulaşabilirsiniz. 
 https://github.com/YZTA-Grup-162/ders-lens/tree/main/toplanti-notlari
 
 **Sprint Retrospective:**
-- Backend altyapısı kuruldu.
-- Database tasarımında temel tablolar oluşturuldu.
-- Ekip içi görev dağılımı netleşti.
+- Görev dağılımları netleşti ve benimsendi, sorumluluklar kavrandı.
 - Toplantıların iki günde bir yapılmasına karar verildi.
 - Yapılan çalışmaların birkaç cümle ile özetlenip toplantı notlarına eklenmesine karar verildi.
 
 **Sprint Review:**
 
 - Ekip, tamamlanan proje kısımlarını ve bu konudaki geri bildirimlerini paylaştı. Projenin geleceğe yönelik nasıl geliştirilebileceği üzerine görüşmeler yapıldı.
-- Docker kullanımı sayesinde geliştirme ortamları eşitlendi.
+- FastAPI kullanılarak temel API iskeleti kuruldu, veritabanı modeli tasarlandı ve uygulandı.
+- Docker kullanılarak geliştirme ortamları senkronize edildi.
+- Ekip içi görev dağılımları ve araştırma konuları belirlendi.
 - Sprint Review katılımcıları: Başak Dilara Çevik,Süleyman Kayyum Buberka, Enes Yıldırım, Hümeyra Betül Şahin, Muhammed Enes Güler
 
 ## Tech Stack
