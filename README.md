@@ -48,8 +48,10 @@ https://github.com/orgs/YZTA-Grup-162/projects/1
 https://github.com/orgs/YZTA-Grup-162/projects/1
 ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Sprint_1.png?raw=true)
 Daily Scrum toplantıları, Google Meet üzerinden yapıldı. Örneklerin bazıları toplanti-notlari dosyasında Tarih.md belgelerinden ulaşabilirsiniz. 
+https://github.com/YZTA-Grup-162/ders-lens/blob/main/toplanti-notlari/Daily_Scrum_Chat.png?raw=true  
+   
 https://github.com/YZTA-Grup-162/ders-lens/tree/main/toplanti-notlari
-![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Toplanti_Notlari_1.png?raw=true)  
+
 **Sprint Retrospective:**
 - Görev dağılımları netleşti ve benimsendi, sorumluluklar kavrandı.
 - Toplantıların iki günde bir yapılmasına karar verildi.
