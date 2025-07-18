@@ -40,8 +40,10 @@ Lise ve üniversite çağındaki öğrencilerinin dikkatini ve derse odaklanmas�
 ---
 https://github.com/orgs/YZTA-Grup-162/projects/1
 
-## Sprint 1
-
+<details>
+   
+<summary><h2> Sprint 1 </h2></summary>
+   
 **Sprint içinde tamamlanması tahmin edilen puan:** 100 Puan  
 **Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde ilk sprintin 100 ile başlaması gerektiği kararlaştırıldı.  
 **Backlog düzeni ve Story seçimleri:** Ürün backlog'umuz, kullanıcı deneyimini destekleyecek mekanik ve içeriklere öncelik verilerek yapılandırılmıştır. Sprint Board üzerinde görünen etiketler frontend, backend, görüntü işleme, model, devops (sunucu vb. işler için) ve R&D şeklindedir.
@@ -64,6 +66,13 @@ https://github.com/YZTA-Grup-162/ders-lens/tree/main/toplanti-notlari
 - Docker kullanılarak geliştirme ortamları senkronize edildi.
 - Ekip içi görev dağılımları ve araştırma konuları belirlendi.
 - Sprint Review katılımcıları: Başak Dilara Çevik,Süleyman Kayyum Buberka, Enes Yıldırım, Hümeyra Betül Şahin, Muhammed Enes Güler
+</details>
+<details>
+  <summary><h2> Sprint 2 </h2></summary>  
+   
+  **Sprint içinde tamamlanması tahmin edilen puan:** 100 Puan  
+  **Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde ikinci sprintin 100 ile başlaması gerektiği kararlaştırıldı. 
+</details>
 
 ## Tech Stack
 
