@@ -38,7 +38,7 @@ Lise ve üniversite çağındaki öğrencilerinin dikkatini ve derse odaklanmas�
 
 ## Product Backlog
 ---
-https://github.com/orgs/YZTA-Grup-162/projects/1
+https://github.com/orgs/YZTA-Grup-162/projects
 
 <details>
    
@@ -72,6 +72,19 @@ https://github.com/YZTA-Grup-162/ders-lens/tree/main/toplanti-notlari
    
   **Sprint içinde tamamlanması tahmin edilen puan:** 100 Puan  
   **Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde ikinci sprintin 100 ile başlaması gerektiği kararlaştırıldı.  
+  **Backlog düzeni ve Story seçimleri:** Ürün backlog'umuz, kullanıcı deneyimini destekleyecek mekanik ve içeriklere öncelik verilerek yapılandırılmıştır. Sprint Board üzerinde görünen etiketler frontend, backend, görüntü işleme, model, devops (sunucu vb. işler için) ve R&D şeklindedir.  
+Daily Scrum toplantıları, Google Meet ve Whatsapp üzerinden devam etmiştir. 
+  <details>
+  <summary><h3> Daly Scrum: Ekran Görüntüleri </h3></summary>  
+     
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Toplanti_2_1.png?raw=true)
+   
+</details>
+
+**Sprint Board**
+
+![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Sprint_2.png?raw=true) 
+
   <details>
   <summary><h3> Uygulama Durumu: Ekran Görüntüleri </h3></summary>  
      
@@ -80,6 +93,14 @@ https://github.com/YZTA-Grup-162/ders-lens/tree/main/toplanti-notlari
    ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Ekran_Goruntusu_3.png?raw=true)  
    ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Ekran_Goruntusu_4.png?raw=true)    
 </details>
+
+**Sprint Review:**
+- Ekip, görevlerdeki gelişmeleri açıklayınca mevcut performansın yükseltilmesi gerektiği anlaşıldı. Bu doğrultuda, modelin geliştirilmesi ve hataların giderilmesi üzerine görüşmeler yapıldı.
+- Sprint Review katılımcıları: Başak Dilara Çevik,Süleyman Kayyum Buberka, Enes Yıldırım, Hümeyra Betül Şahin, Muhammed Enes Güler
+
+**Sprint Retrospective:**
+- Ekip belirlenen veri setleri ile modelin geliştirilmesine devam edecek.
+-  Model geliştirme ve hata giderme süreçlerimize "hızlı düzeltme" (hotfix) veya "öncelikli hata çözümü" mekanizmaları dahil edilecek.
 </details>
 
 ## Tech Stack
