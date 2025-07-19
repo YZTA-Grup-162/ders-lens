@@ -71,7 +71,15 @@ https://github.com/YZTA-Grup-162/ders-lens/tree/main/toplanti-notlari
   <summary><h2> Sprint 2 </h2></summary>  
    
   **Sprint içinde tamamlanması tahmin edilen puan:** 100 Puan  
-  **Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde ikinci sprintin 100 ile başlaması gerektiği kararlaştırıldı. 
+  **Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde ikinci sprintin 100 ile başlaması gerektiği kararlaştırıldı.  
+  <details>
+  <summary><h3> Uygulama Durumu: Ekran Görüntüleri </h3></summary>  
+     
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygalama_Ekran_Goruntusu_1.png?raw=true)
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Ekran_Goruntusu_2.png?raw=true)  
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Ekran_Goruntusu_3.png?raw=true)  
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Ekran_Goruntusu_4.png?raw=true)    
+</details>
 </details>
 
 ## Tech Stack
