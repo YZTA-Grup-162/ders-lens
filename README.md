@@ -78,7 +78,8 @@ Daily Scrum toplantıları, Google Meet ve Whatsapp üzerinden devam etmiştir.
   <summary><h3> Daly Scrum: Ekran Görüntüleri </h3></summary>  
      
    ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Toplanti_2_1.png?raw=true)
-   
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Toplanti_2_2.png?raw=true)
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Toplanti_2_3.png?raw=true)
 </details>
 
 **Sprint Board**
