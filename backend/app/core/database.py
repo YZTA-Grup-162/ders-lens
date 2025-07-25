@@ -2,7 +2,7 @@
 Database configuration and models
 """
 
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, Boolean, Text, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, Boolean, Text, ForeignKey, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.sql import func
@@ -23,6 +23,13 @@ def get_db():
     finally:
         db.close()
 
+class_students = Table(
+        "class_students",
+        Base.metadata,
+        Column("class_id", Integer, ForeignKey("classes.id")),
+        Column("student_id", Integer, ForeignKey("users.id"))
+    )
+
 
 # Database Models
 class User(Base):
@@ -38,6 +45,28 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    classes = relationship("Class", secondary=class_students, back_populates="students")
+    teaching_classes = relationship(
+        "Class",
+        back_populates="teacher",
+        foreign_keys="Class.teacher_id"
+    )
+
+class Class(Base):
+    """Class model for grouping students and teachers"""
+    __tablename__ = "classes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    teacher_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    teacher = relationship(
+        "User",
+        back_populates="teaching_classes",
+        foreign_keys=[teacher_id]
+    )
+    students = relationship("User", secondary="class_students", back_populates="classes")
 
 
 class Session(Base):
