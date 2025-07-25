@@ -73,7 +73,7 @@ models/*.onnx
 models/*.pth
 
 models_daisee/
-models_fer2013/
+models_mendeley/
 models_mpiigaze/
 models_ravdess/
 
