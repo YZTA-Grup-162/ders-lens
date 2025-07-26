@@ -104,6 +104,39 @@ Daily Scrum toplantıları, Google Meet ve Whatsapp üzerinden devam etmiştir.
 -  Model geliştirme ve hata giderme süreçlerimize "hızlı düzeltme" (hotfix) veya "öncelikli hata çözümü" mekanizmaları dahil edilecek.
 </details>
 
+## Model Dosyaları
+
+**⚠️ Önemli:** Büyük AI model dosyaları (*.pth, *.onnx, *.pkl) boyut kısıtlamaları nedeniyle Git'ten hariç tutulmuştur.
+
+### Gerekli Model Dosyaları
+Uygulamayı çalıştırmak için aşağıdaki model dosyalarını indirmeniz/eğitmeniz gerekir:
+
+**AI Servis Modelleri** (`ai-service/` klasörüne yerleştirin):
+- `mendeley_model.pth` - Ana duygu tespit modeli
+- `mendeley_nn_best.pth` - En iyi sinir ağı modeli
+- `mendeley_scaler.pkl` - Veri ön işleme ölçekleyici
+- `mendeley_random_forest.pkl` - Rastgele orman sınıflandırıcı
+- `mendeley_gradient_boosting.pkl` - Gradyan artırma modeli
+- `mendeley_logistic_regression.pkl` - Lojistik regresyon modeli
+
+**Backend Modelleri** (`backend/models/` klasörüne yerleştirin):
+- `daisee_emotional_model_best.pth` - DAISEE veri seti eğitimli model
+- `fine_tuned_randomforest_deep.pkl` - İnce ayarlı rastgele orman
+- `best_model.onnx` - ONNX optimize edilmiş model
+- Çeşitli ensemble ve ölçekleyici dosyaları
+
+**FER2013 Modelleri** (`models_fer2013/` klasörüne yerleştirin):
+- `fer2013_model.pth` - FER2013 veri seti modeli
+- `fer2013_model.onnx` - ONNX versiyonu
+- Model metrikleri ve ölçekleyici dosyaları
+
+### Model Eğitimi
+Modelleri sıfırdan eğitmek için:
+```bash
+python train.py
+python run_all_dataset_training.py
+```
+
 ## Tech Stack
 
 **Backend:** FastAPI, Python 3.9+, OpenCV, MediaPipe  
