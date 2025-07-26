@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AttentionPulse - 7 Emotions Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .model-info {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .video-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        video {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 480px;
+            height: 360px;
+        }
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .result-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        .score {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .high-score { color: #4CAF50; }
+        .medium-score { color: #FF9800; }
+        .low-score { color: #F44336; }
+        .emotions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .emotion-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .emotion-card.primary {
+            background: rgba(255, 255, 255, 0.4);
+            border: 2px solid #4CAF50;
+            transform: scale(1.05);
+        }
+        .emotion-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .emotion-score {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .emotion-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .emotion-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            transition: width 0.3s ease;
+        }
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin: 0 5px;
+            font-size: 0.9em;
+        }
+        .emotion-emoji {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 AttentionPulse - 7 Emotions Demo</h1>
+        <div class="model-info">
+            <h2>🧠 AI Model Information</h2>
+            <div class="badge">7-Emotion Classification</div>
+            <div class="badge">FER2013 Dataset</div>
+            <div class="badge">PyTorch Model</div>
+            <div class="badge">Real-time Analysis</div>
+            <p>This demo uses a deep learning model trained on the FER2013 dataset to detect 7 emotions:</p>
+            <p><strong>Angry, Disgust, Fear, Happy, Sad, Surprise, Neutral</strong></p>
+            <p>Each emotion is mapped to attention levels for educational assessment.</p>
+        </div>
+        <div class="video-container">
+            <video id="video" autoplay muted></video>
+        </div>
+        <div class="controls">
+            <button id="startBtn" onclick="startCamera()">📷 Start Camera</button>
+            <button id="stopBtn" onclick="stopCamera()" disabled>⏹️ Stop Camera</button>
+            <button id="analyzeBtn" onclick="analyzeFrame()" disabled>🔍 Analyze Frame</button>
+        </div>
+        <div class="status" id="status">Click "Start Camera" to begin</div>
+        <div class="results" id="results" style="display: none;">
+            <div class="result-card">
+                <h3>🎯 Attention Score</h3>
+                <div class="score" id="attentionScore">0%</div>
+                <p>Level: <span id="attentionLevel">Unknown</span></p>
+            </div>
+            <div class="result-card">
+                <h3>😊 Primary Emotion</h3>
+                <div class="emotion-emoji" id="primaryEmoji">😐</div>
+                <p><strong id="primaryEmotion">neutral</strong></p>
+                <p>Confidence: <span id="emotionConfidence">0%</span></p>
+            </div>
+            <div class="result-card">
+                <h3>⚡ Performance</h3>
+                <p>Processing Time: <span id="processingTime">0</span> ms</p>
+                <p>Model: <span id="modelType">Emotion Detector</span></p>
+                <p>Method: <span id="modelMethod">7-emotion classification</span></p>
+            </div>
+        </div>
+        <div class="emotions-grid" id="emotionsGrid" style="display: none;">
+            <div class="emotion-card" id="angry">
+                <div class="emotion-emoji">😠</div>
+                <div class="emotion-name">Angry</div>
+                <div class="emotion-score">0%</div>
+                <div class="emotion-bar">
+                    <div class="emotion-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="emotion-card" id="disgust">
+                <div class="emotion-emoji">🤢</div>
+                <div class="emotion-name">Disgust</div>
+                <div class="emotion-score">0%</div>
+                <div class="emotion-bar">
+                    <div class="emotion-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="emotion-card" id="fear">
+                <div class="emotion-emoji">😨</div>
+                <div class="emotion-name">Fear</div>
+                <div class="emotion-score">0%</div>
+                <div class="emotion-bar">
+                    <div class="emotion-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="emotion-card" id="happy">
+                <div class="emotion-emoji">😊</div>
+                <div class="emotion-name">Happy</div>
+                <div class="emotion-score">0%</div>
+                <div class="emotion-bar">
+                    <div class="emotion-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="emotion-card" id="sad">
+                <div class="emotion-emoji">😢</div>
+                <div class="emotion-name">Sad</div>
+                <div class="emotion-score">0%</div>
+                <div class="emotion-bar">
+                    <div class="emotion-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="emotion-card" id="surprise">
+                <div class="emotion-emoji">😲</div>
+                <div class="emotion-name">Surprise</div>
+                <div class="emotion-score">0%</div>
+                <div class="emotion-bar">
+                    <div class="emotion-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="emotion-card" id="neutral">
+                <div class="emotion-emoji">😐</div>
+                <div class="emotion-name">Neutral</div>
+                <div class="emotion-score">0%</div>
+                <div class="emotion-bar">
+                    <div class="emotion-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let stream = null;
+        let analyzing = false;
+        const video = document.getElementById('video');
+        const emotionEmojis = {
+            'angry': '😠',
+            'disgust': '🤢',
+            'fear': '😨',
+            'happy': '😊',
+            'sad': '😢',
+            'surprise': '😲',
+            'neutral': '😐'
+        };
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 480, height: 360 } 
+                });
+                video.srcObject = stream;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('analyzeBtn').disabled = false;
+                document.getElementById('status').textContent = 'Camera started - Click analyze to detect emotions!';
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                document.getElementById('status').textContent = 'Error accessing camera: ' + error.message;
+            }
+        }
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                stream = null;
+            }
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('status').textContent = 'Camera stopped';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('emotionsGrid').style.display = 'none';
+        }
+        async function analyzeFrame() {
+            if (analyzing) return;
+            analyzing = true;
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('status').textContent = 'Analyzing emotions...';
+            try {
+                // Capture frame from video
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+                // Convert to base64
+                const frameData = canvas.toDataURL('image/jpeg').split(',')[1];
+                // Send to API
+                const response = await fetch('/api/analyze-frame-pytorch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        frame_data: frameData,
+                        student_id: 'demo-user',
+                        timestamp: Date.now()
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                displayResults(result);
+            } catch (error) {
+                console.error('Analysis failed:', error);
+                document.getElementById('status').textContent = `Analysis failed: ${error.message}`;
+            } finally {
+                analyzing = false;
+                document.getElementById('analyzeBtn').disabled = false;
+            }
+        }
+        function displayResults(result) {
+            console.log('Full API result:', result);
+            document.getElementById('results').style.display = 'grid';
+            document.getElementById('emotionsGrid').style.display = 'grid';
+            // Attention score
+            const score = result.attention_score || 0;
+            document.getElementById('attentionScore').textContent = Math.round(score) + '%';
+            document.getElementById('attentionLevel').textContent = result.attention_level || 'Unknown';
+            // Color coding
+            const scoreElement = document.getElementById('attentionScore');
+            if (score >= 70) {
+                scoreElement.className = 'score high-score';
+            } else if (score >= 40) {
+                scoreElement.className = 'score medium-score';
+            } else {
+                scoreElement.className = 'score low-score';
+            }
+            // Primary emotion
+            const emotions = result.emotions || {};
+            const primaryEmotion = emotions.primary_emotion || 'neutral';
+            document.getElementById('primaryEmotion').textContent = primaryEmotion;
+            document.getElementById('primaryEmoji').textContent = emotionEmojis[primaryEmotion] || '😐';
+            document.getElementById('emotionConfidence').textContent = Math.round((result.emotion_confidence || 0) * 100) + '%';
+            // Processing time
+            document.getElementById('processingTime').textContent = result.processing_time_ms || 0;
+            // Model info
+            document.getElementById('modelType').textContent = result.model_name || 'Emotion Detector';
+            document.getElementById('modelMethod').textContent = result.prediction_method || '7-emotion classification';
+            // Update all emotion cards
+            const emotionNames = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
+            emotionNames.forEach(emotion => {
+                const card = document.getElementById(emotion);
+                const score = (emotions[emotion] || 0) * 100;
+                const scoreElement = card.querySelector('.emotion-score');
+                const barElement = card.querySelector('.emotion-bar-fill');
+                scoreElement.textContent = Math.round(score) + '%';
+                barElement.style.width = score + '%';
+                // Highlight primary emotion
+                if (emotion === primaryEmotion) {
+                    card.classList.add('primary');
+                } else {
+                    card.classList.remove('primary');
+                }
+            });
+            // Update status
+            document.getElementById('status').textContent = `✅ Analysis complete! Primary emotion: ${primaryEmotion} (${Math.round(score)}% attention)`;
+        }
+        // Auto-analyze every 3 seconds when camera is running
+        setInterval(() => {
+            if (stream && !analyzing && !document.getElementById('analyzeBtn').disabled) {
+                analyzeFrame();
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AttentionPulse - Ultimate Emotion Detector</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .video-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #video {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            transform: none;
+        }
+        .results-section {
+            display: flex;
+            flex-direction: column;
+        }
+        .emotion-display {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .primary-emotion {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .attention-level {
+            text-align: center;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .emotion-bars {
+            margin-top: 20px;
+        }
+        .emotion-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        .emotion-label {
+            min-width: 80px;
+            font-weight: 500;
+        }
+        .emotion-progress {
+            flex: 1;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+        .emotion-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        .emotion-value {
+            min-width: 50px;
+            text-align: right;
+            font-size: 0.9em;
+        }
+        .stats {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .status {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .attention-score {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .model-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .model-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 5px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+        }
+        .highly_attentive { color: #4ade80; }
+        .attentive { color: #60a5fa; }
+        .distracted { color: #fbbf24; }
+        .not_attentive { color: #f87171; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 AttentionPulse Ultimate</h1>
+        <p class="subtitle">Advanced Transfer Learning ResNet18 Emotion Detection (34%+ Accuracy)</p>
+        <div class="status" id="status">
+            Click "Start Camera" to begin emotion detection
+        </div>
+        <div class="main-content">
+            <div class="video-section">
+                <video id="video" autoplay muted></video>
+                <div class="controls">
+                    <button id="startBtn" onclick="startCamera()">Start Camera</button>
+                    <button id="stopBtn" onclick="stopCamera()" disabled>Stop Camera</button>
+                </div>
+                <div class="model-info">
+                    <h3>🏆 Ultimate Model Features</h3>
+                    <div class="model-badge">ResNet18 Transfer Learning</div>
+                    <div class="model-badge">7 Emotion Classes</div>
+                    <div class="model-badge">34%+ Accuracy</div>
+                    <div class="model-badge">Two-Phase Training</div>
+                    <div class="model-badge">Class Balancing</div>
+                </div>
+            </div>
+            <div class="results-section">
+                <div class="emotion-display">
+                    <div class="primary-emotion" id="primaryEmotion">😐 Neutral</div>
+                    <div class="attention-score" id="attentionScore">0%</div>
+                    <div class="attention-level" id="attentionLevel">No detection</div>
+                </div>
+                <div class="emotion-bars" id="emotionBars">
+                </div>
+                <div class="stats">
+                    <div class="stat-row">
+                        <span>Model:</span>
+                        <span id="modelType">Ultimate ResNet18</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Confidence:</span>
+                        <span id="confidence">0%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Processing Time:</span>
+                        <span id="processingTime">0ms</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Face Detected:</span>
+                        <span id="faceDetected">No</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let video = document.getElementById('video');
+        let stream = null;
+        let analysisInterval = null;
+        const emotionEmojis = {
+            'angry': '😠',
+            'disgust': '🤢',
+            'fear': '😨',
+            'happy': '😊',
+            'sad': '😢',
+            'surprise': '😲',
+            'neutral': '😐'
+        };
+        const emotionList = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
+        // Initialize emotion bars
+        function initializeEmotionBars() {
+            const container = document.getElementById('emotionBars');
+            container.innerHTML = '';
+            emotionList.forEach(emotion => {
+                const bar = document.createElement('div');
+                bar.className = 'emotion-bar';
+                bar.innerHTML = `
+                    <span class="emotion-label">${emotion.charAt(0).toUpperCase() + emotion.slice(1)}</span>
+                    <div class="emotion-progress">
+                        <div class="emotion-fill" id="fill-${emotion}" style="width: 0%"></div>
+                    </div>
+                    <span class="emotion-value" id="value-${emotion}">0%</span>
+                `;
+                container.appendChild(bar);
+            });
+        }
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: 640, 
+                        height: 480,
+                        facingMode: 'user'
+                    } 
+                });
+                video.srcObject = stream;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('status').textContent = '📹 Camera active - Analyzing emotions...';
+                initializeEmotionBars();
+                // Start analysis
+                analysisInterval = setInterval(analyzeFrame, 1000);
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                document.getElementById('status').textContent = '❌ Error: Could not access camera';
+            }
+        }
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            if (analysisInterval) {
+                clearInterval(analysisInterval);
+                analysisInterval = null;
+            }
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('status').textContent = '📱 Camera stopped';
+        }
+        function analyzeFrame() {
+            if (!video.videoWidth || !video.videoHeight) return;
+            // Create canvas to capture frame
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            // Convert to base64
+            const frameData = canvas.toDataURL('image/jpeg', 0.8);
+            // Send to backend
+            fetch('/api/analyze-frame-pytorch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    frame_data: frameData,
+                    student_id: 'ultimate_demo_user',
+                    timestamp: Date.now() / 1000
+                })
+            })
+            .then(response => response.json())
+            .then(data => updateDisplay(data))
+            .catch(error => {
+                console.error('Analysis error:', error);
+                document.getElementById('status').textContent = '⚠️ Analysis error';
+            });
+        }
+        function updateDisplay(data) {
+            // Update primary emotion
+            const primaryEmotion = data.primary_emotion || 'neutral';
+            const emoji = emotionEmojis[primaryEmotion] || '😐';
+            document.getElementById('primaryEmotion').textContent = 
+                `${emoji} ${primaryEmotion.charAt(0).toUpperCase() + primaryEmotion.slice(1)}`;
+            // Update attention score
+            const attentionScore = Math.round((data.attention_score || 0) * 100);
+            document.getElementById('attentionScore').textContent = `${attentionScore}%`;
+            // Update attention level
+            const attentionLevel = data.attention_level || 'unknown';
+            const levelElement = document.getElementById('attentionLevel');
+            levelElement.textContent = attentionLevel.replace(/_/g, ' ').toUpperCase();
+            levelElement.className = `attention-level ${attentionLevel}`;
+            // Update emotion bars
+            const emotions = data.emotions || {};
+            emotionList.forEach(emotion => {
+                const percentage = Math.round((emotions[emotion] || 0) * 100);
+                const fillElement = document.getElementById(`fill-${emotion}`);
+                const valueElement = document.getElementById(`value-${emotion}`);
+                if (fillElement && valueElement) {
+                    fillElement.style.width = `${percentage}%`;
+                    valueElement.textContent = `${percentage}%`;
+                }
+            });
+            // Update stats
+            document.getElementById('modelType').textContent = data.model_type || 'Ultimate ResNet18';
+            document.getElementById('confidence').textContent = 
+                `${Math.round((data.emotion_confidence || 0) * 100)}%`;
+            document.getElementById('processingTime').textContent = 
+                `${Math.round((data.processing_time_ms || 0))}ms`;
+            document.getElementById('faceDetected').textContent = 
+                data.face_detected ? 'Yes' : 'No';
+            // Update status
+            const statusMsg = data.face_detected ? 
+                `✅ Detecting: ${primaryEmotion} (${Math.round((data.emotion_confidence || 0) * 100)}% confidence)` :
+                '👤 No face detected';
+            document.getElementById('status').textContent = statusMsg;
+        }
+        // Initialize on page load
+        initializeEmotionBars();
+    </script>
+</body>
+</html>

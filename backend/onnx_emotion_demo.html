@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 ONNX Emotion Detection Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        .onnx-highlight {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        .status {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .video-section {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        video {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 10px;
+            background: #000;
+            /* Beautification filters */
+            filter: blur(0px) brightness(1.1) contrast(1.1) saturate(1.2) hue-rotate(0deg);
+            transition: filter 0.3s ease;
+        }
+        video.beauty-filter {
+            filter: blur(0.3px) brightness(1.2) contrast(1.08) saturate(1.4) hue-rotate(8deg) sepia(0.1);
+        }
+        video.vintage-filter {
+            filter: sepia(0.4) brightness(1.05) contrast(1.3) saturate(0.7) hue-rotate(-5deg);
+        }
+        video.warm-filter {
+            filter: brightness(1.15) contrast(1.05) saturate(1.3) hue-rotate(15deg) sepia(0.1);
+        }
+        video.cool-filter {
+            filter: brightness(1.08) contrast(1.2) saturate(1.1) hue-rotate(-15deg);
+        }
+        video.dramatic-filter {
+            filter: contrast(1.4) brightness(0.9) saturate(1.5) hue-rotate(5deg);
+        }
+        video.glow-filter {
+            filter: brightness(1.3) contrast(0.9) saturate(1.6) blur(0.2px);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        video.soft-filter {
+            filter: blur(0.4px) brightness(1.25) contrast(0.95) saturate(1.2);
+        }
+        .filter-controls button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .filter-controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .filter-controls h4 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .results-section {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .emotion-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .primary-emotion {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+        .emotion-name {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-transform: capitalize;
+        }
+        .attention-score {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 5px;
+        }
+        .attention-level {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+        .emotions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .emotion-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .emotion-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        .emotion-emoji {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        .emotion-label {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            text-transform: capitalize;
+        }
+        .emotion-value {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        .model-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        .model-badge {
+            display: inline-block;
+            background: #4CAF50;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin: 2px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .emotions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .loading {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 ONNX Emotion Detection</h1>
+        <p class="subtitle">7-Emotion Classification (FER2013) with <span class="onnx-highlight">ONNX Runtime</span></p>
+        <div class="status" id="status">
+            Click "Start Camera" to begin ONNX emotion detection
+        </div>
+        <div class="main-content">
+            <div class="video-section">
+                <video id="video" autoplay muted></video>
+                <div class="controls">
+                    <button id="startBtn" onclick="startCamera()">📷 Start Camera</button>
+                    <button id="stopBtn" onclick="stopCamera()" disabled>⏹️ Stop Camera</button>
+                    <button id="analyzeBtn" onclick="toggleAnalysis()" disabled>🔍 Start Analysis</button>
+                </div>
+                <div class="filter-controls" style="margin-top: 15px;">
+                    <h4>✨ Camera Filters</h4>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+                        <button onclick="applyFilter('none')" style="background: linear-gradient(45deg, #667eea, #764ba2);">No Filter</button>
+                        <button onclick="applyFilter('beauty')" style="background: linear-gradient(45deg, #ff9a9e, #fecfef);">✨ Beauty</button>
+                        <button onclick="applyFilter('soft')" style="background: linear-gradient(45deg, #ffeaa7, #fab1a0);">🌸 Soft</button>
+                        <button onclick="applyFilter('glow')" style="background: linear-gradient(45deg, #fd79a8, #fdcb6e);">✨ Glow</button>
+                        <button onclick="applyFilter('warm')" style="background: linear-gradient(45deg, #ff7e5f, #feb47b);">🌅 Warm</button>
+                        <button onclick="applyFilter('cool')" style="background: linear-gradient(45deg, #667eea, #764ba2);">❄️ Cool</button>
+                        <button onclick="applyFilter('vintage')" style="background: linear-gradient(45deg, #8360c3, #2ebf91);">📸 Vintage</button>
+                        <button onclick="applyFilter('dramatic')" style="background: linear-gradient(45deg, #434343, #000000);">🎭 Dramatic</button>
+                    </div>
+                    <p style="font-size: 0.8em; opacity: 0.8; margin-top: 8px;">💡 Try different filters to find your best look!</p>
+                </div>
+                <div class="model-info">
+                    <h3>🚀 ONNX Model Features</h3>
+                    <div class="model-badge">7 Emotion Classes</div>
+                    <div class="model-badge">ONNX Runtime</div>
+                    <div class="model-badge">GPU Acceleration</div>
+                    <div class="model-badge">Cross-Platform</div>
+                    <div class="model-badge">Real-time Processing</div>
+                    <div class="model-badge">MediaPipe Face Detection</div>
+                </div>
+            </div>
+            <div class="results-section">
+                <div class="emotion-display">
+                    <div class="primary-emotion" id="primaryEmoji">😐</div>
+                    <div class="emotion-name" id="primaryEmotion">Neutral</div>
+                    <div class="attention-score" id="attentionScore">0%</div>
+                    <div class="attention-level" id="attentionLevel">No detection</div>
+                </div>
+                <div class="emotions-grid" id="emotionsGrid">
+                </div>
+            </div>
+        </div>
+        <div class="stats">
+            <div class="stat-card">
+                <h3>📊 Performance</h3>
+                <div class="stat-row">
+                    <span>Processing Time:</span>
+                    <span id="processingTime">0ms</span>
+                </div>
+                <div class="stat-row">
+                    <span>Face Detected:</span>
+                    <span id="faceDetected">No</span>
+                </div>
+                <div class="stat-row">
+                    <span>Confidence:</span>
+                    <span id="confidence">0%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>🎯 Model Info</h3>
+                <div class="stat-row">
+                    <span>Model:</span>
+                    <span>ONNX 7-Emotions</span>
+                </div>
+                <div class="stat-row">
+                    <span>Provider:</span>
+                    <span id="provider">CPU</span>
+                </div>
+                <div class="stat-row">
+                    <span>Status:</span>
+                    <span id="modelStatus" class="loading">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let video = document.getElementById('video');
+        let stream = null;
+        let analysisInterval = null;
+        let isAnalyzing = false;
+        // 7 emotions from FER2013 dataset (what the model actually outputs)
+        const emotions = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
+        const emotionEmojis = {
+            'neutral': '😐',
+            'happy': '😊',
+            'sad': '😢',
+            'surprise': '😲',
+            'angry': '😠',
+            'fear': '😨',
+            'disgust': '🤢'
+        };
+        const emotionColors = {
+            'neutral': '#gray',
+            'happiness': '#4CAF50',
+            'sadness': '#2196F3',
+            'surprise': '#FF9800',
+            'anger': '#F44336',
+            'fear': '#9C27B0',
+            'contempt': '#795548',
+            'disgust': '#607D8B'
+        };
+        function applyFilter(filterType) {
+            const video = document.getElementById('video');
+            // Remove all existing filter classes
+            video.classList.remove('beauty-filter', 'vintage-filter', 'warm-filter', 'cool-filter', 'dramatic-filter', 'glow-filter', 'soft-filter');
+            // Apply new filter
+            switch(filterType) {
+                case 'beauty':
+                    video.classList.add('beauty-filter');
+                    updateStatus('✨ Beauty filter applied - You look gorgeous!');
+                    break;
+                case 'soft':
+                    video.classList.add('soft-filter');
+                    updateStatus('🌸 Soft filter applied - Dreamy and elegant!');
+                    break;
+                case 'glow':
+                    video.classList.add('glow-filter');
+                    updateStatus('✨ Glow filter applied - Radiant and luminous!');
+                    break;
+                case 'warm':
+                    video.classList.add('warm-filter');
+                    updateStatus('🌅 Warm filter applied - Cozy golden vibes!');
+                    break;
+                case 'cool':
+                    video.classList.add('cool-filter');
+                    updateStatus('❄️ Cool filter applied - Fresh and crisp!');
+                    break;
+                case 'vintage':
+                    video.classList.add('vintage-filter');
+                    updateStatus('📸 Vintage filter applied - Classic timeless style!');
+                    break;
+                case 'dramatic':
+                    video.classList.add('dramatic-filter');
+                    updateStatus('🎭 Dramatic filter applied - Bold and striking presence!');
+                    break;
+                default:
+                    updateStatus('📷 No filter - Natural beauty shines through!');
+                    break;
+            }
+        }
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: 640, 
+                        height: 480,
+                        facingMode: 'user'
+                    } 
+                });
+                video.srcObject = stream;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('analyzeBtn').disabled = false;
+                updateStatus('📷 Camera started - Ready for analysis');
+                // Initialize emotion grid
+                initializeEmotionGrid();
+                // Apply default beauty filter for a better look
+                setTimeout(() => {
+                    applyFilter('beauty');
+                }, 500);
+            } catch (err) {
+                console.error('Error starting camera:', err);
+                updateStatus('❌ Error starting camera: ' + err.message);
+            }
+        }
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                stream = null;
+            }
+            if (analysisInterval) {
+                clearInterval(analysisInterval);
+                analysisInterval = null;
+                isAnalyzing = false;
+            }
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('analyzeBtn').textContent = '🔍 Start Analysis';
+            updateStatus('⏹️ Camera stopped');
+        }
+        function toggleAnalysis() {
+            if (isAnalyzing) {
+                stopAnalysis();
+            } else {
+                startAnalysis();
+            }
+        }
+        function startAnalysis() {
+            isAnalyzing = true;
+            document.getElementById('analyzeBtn').textContent = '⏸️ Stop Analysis';
+            updateStatus('🔍 Analyzing emotions...');
+            // Start analysis every 1 second
+            analysisInterval = setInterval(analyzeFrame, 1000);
+        }
+        function stopAnalysis() {
+            isAnalyzing = false;
+            document.getElementById('analyzeBtn').textContent = '🔍 Start Analysis';
+            if (analysisInterval) {
+                clearInterval(analysisInterval);
+                analysisInterval = null;
+            }
+            updateStatus('⏸️ Analysis paused');
+        }
+        async function analyzeFrame() {
+            if (!video.videoWidth || !video.videoHeight) {
+                return;
+            }
+            try {
+                // Capture frame from video
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+                // Convert to blob
+                canvas.toBlob(async (blob) => {
+                    const formData = new FormData();
+                    formData.append('frame', blob, 'frame.jpg');
+                    try {
+                        const response = await fetch('/api/analyze-frame-onnx', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        if (response.ok) {
+                            const result = await response.json();
+                            updateResults(result);
+                        } else {
+                            console.error('Analysis failed:', response.statusText);
+                            updateStatus('❌ Analysis failed: ' + response.statusText);
+                        }
+                    } catch (error) {
+                        console.error('Network error:', error);
+                        updateStatus('❌ Network error: ' + error.message);
+                    }
+                }, 'image/jpeg', 0.8);
+            } catch (error) {
+                console.error('Frame capture error:', error);
+            }
+        }
+        function updateResults(result) {
+            // Update primary emotion
+            const primaryEmotion = result.primary_emotion || 'neutral';
+            const attentionScore = Math.round(result.attention_score || 0);
+            document.getElementById('primaryEmoji').textContent = emotionEmojis[primaryEmotion] || '😐';
+            document.getElementById('primaryEmotion').textContent = primaryEmotion;
+            document.getElementById('attentionScore').textContent = attentionScore + '%';
+            document.getElementById('attentionLevel').textContent = result.attention_level || 'unknown';
+            // Update stats
+            document.getElementById('processingTime').textContent = 
+                Math.round((result.processing_time || 0) * 1000) + 'ms';
+            document.getElementById('faceDetected').textContent = result.face_detected ? 'Yes' : 'No';
+            document.getElementById('confidence').textContent = 
+                Math.round((result.emotion_confidence || 0) * 100) + '%';
+            // Update emotion grid
+            if (result.emotions) {
+                updateEmotionGrid(result.emotions);
+            }
+            // Update status
+            const statusText = result.face_detected ? 
+                `🎭 Analyzing: ${primaryEmotion} (${attentionScore}% attention)` : 
+                '👤 No face detected';
+            updateStatus(statusText);
+        }
+        function initializeEmotionGrid() {
+            const emotionLabels = emotions; // Use the 7 emotions defined above
+            const grid = document.getElementById('emotionsGrid');
+            grid.innerHTML = '';
+            emotionLabels.forEach(emotion => {
+                const card = document.createElement('div');
+                card.className = 'emotion-card';
+                card.id = `emotion-${emotion}`;
+                card.innerHTML = `
+                    <div class="emotion-emoji">${emotionEmojis[emotion]}</div>
+                    <div class="emotion-label">${emotion}</div>
+                    <div class="emotion-value" id="value-${emotion}">0%</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        function updateEmotionGrid(emotions) {
+            Object.entries(emotions).forEach(([emotion, value]) => {
+                const valueElement = document.getElementById(`value-${emotion}`);
+                if (valueElement) {
+                    valueElement.textContent = Math.round(value * 100) + '%';
+                    // Update card opacity based on value
+                    const card = document.getElementById(`emotion-${emotion}`);
+                    if (card) {
+                        card.style.opacity = 0.3 + (value * 0.7);
+                        card.style.background = `rgba(${emotionColors[emotion] || '255,255,255'}, ${0.1 + value * 0.3})`;
+                    }
+                }
+            });
+        }
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus('🎭 ONNX Emotion Detector Ready');
+            initializeEmotionGrid();
+            // Check model status
+            fetch('/api/model-info')
+                .then(response => response.json())
+                .then(info => {
+                    document.getElementById('modelStatus').textContent = 
+                        info.model_loaded ? '✅ Ready' : '❌ Not Loaded';
+                    document.getElementById('modelStatus').classList.remove('loading');
+                })
+                .catch(err => {
+                    document.getElementById('modelStatus').textContent = '❌ Error';
+                    document.getElementById('modelStatus').classList.remove('loading');
+                });
+        });
+    </script>
+</body>
+</html>
