@@ -65,17 +65,29 @@ logs/
 *.db
 *.sqlite3
 
-# ML Models
-models/*.pkl
-models/*.h5
-models/*.pt
-models/*.onnx
-models/*.pth
-
+# ML Models - Large files excluded from Git
+*.pkl
+*.pth
+*.onnx
+*.h5
+*.pt
+models/
+models_*/
+ai-service/*.pkl
+ai-service/*.pth
+ai-service/*.onnx
+backend/models/
 models_daisee/
 models_mendeley/
 models_mpiigaze/
 models_ravdess/
+models_fer2013/
+
+# Training artifacts
+*.png
+mendeley_*.json
+mendeley_*.pkl
+mendeley_*.pth
 
 
 # Data
@@ -92,6 +104,11 @@ datasets/
 # Coverage
 .coverage
 htmlcov/
+
+# Large patch files
+*.patch
+big-change.patch
+add-your_file.patch
 
 # Pytest
 .pytest_cache/
