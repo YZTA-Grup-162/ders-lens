@@ -1,6 +1,6 @@
 
 
-# AttentionPulse
+# DersLens
 
 Web tabanlı gerçek zamanlı öğrenci dikkat analizi sistemi. Webcam görüntülerinden öğrenci dikkat seviyelerini tespit eder ve öğretmenlere anlık geri bildirim sağlar.
 ## Takım İsmi
