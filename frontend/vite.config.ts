@@ -12,20 +12,21 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    port: 5173,
     host: '0.0.0.0',
-    strictPort: true,
+    strictPort: false,
     watch: {
       usePolling: true,
       interval: 100,
     },
     proxy: {
       '/api': {
-        target: 'http://backend-dev:8000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
+        secure: false,
       },
       '/ws': {
-        target: 'ws://backend-dev:8000',
+        target: 'ws://localhost:8000',
         ws: true,
         changeOrigin: true,
       },
@@ -38,13 +39,16 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          ui: ['@headlessui/react', 'framer-motion'],
-          charts: ['recharts'],
+          ui: ['framer-motion', 'clsx'],
+          charts: ['echarts', 'echarts-for-react'],
+          router: ['react-router-dom'],
+          i18n: ['react-i18next', 'i18next'],
+          state: ['zustand'],
         },
       },
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'socket.io-client'],
+    include: ['react', 'react-dom', 'socket.io-client', 'echarts', 'echarts-for-react', 'framer-motion', 'zustand'],
   },
 })

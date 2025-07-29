@@ -7,14 +7,21 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional, Tuple
+
 import cv2
 import mediapipe as mp
 import numpy as np
+
 try:
-    from .enhanced_dataset_integration import EnhancedAttentionDetector
+    from backend.app.ai.enhanced_dataset_integration import \
+        EnhancedAttentionDetector
     ENHANCED_FEATURES_AVAILABLE = True
 except ImportError:
-    ENHANCED_FEATURES_AVAILABLE = False
+    try:
+        from enhanced_dataset_integration import EnhancedAttentionDetector
+        ENHANCED_FEATURES_AVAILABLE = True
+    except ImportError:
+        ENHANCED_FEATURES_AVAILABLE = False
 logger = logging.getLogger(__name__)
 if not ENHANCED_FEATURES_AVAILABLE:
     logger.warning("Enhanced features not available. Install scikit-learn for full functionality.")
@@ -171,11 +178,13 @@ class AttentionDetector:
             'model_used': enhanced_result.get('model_used', 'unknown')
         }
         pose_weight = enhanced_result.get('pose_attention_weight', 0.5)
+        # Extract actual head pose from enhanced result if available
+        head_pose_data = enhanced_result.get('head_pose', {})
         head_pose = {
             'pose_attention_weight': pose_weight,
-            'yaw': 0.0,  # Placeholder
-            'pitch': 0.0,  # Placeholder
-            'roll': 0.0   # Placeholder
+            'yaw': head_pose_data.get('yaw', 0.0),
+            'pitch': head_pose_data.get('pitch', 0.0),
+            'roll': head_pose_data.get('roll', 0.0)
         }
         return AttentionData(
             attention_level=attention_level,

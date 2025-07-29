@@ -235,7 +235,7 @@ export function Footer() {
           viewport={{ once: true }}
         >
           <p className="text-xs text-gray-600">
-            FER2013+, DAISEE ve MPIIGaze veri setleri kullanılarak eğitilmiş AI modelleri • 
+            FER2013+, DAISEE ve MPIIGaze, Mendeley veri setleri kullanılarak eğitilmiş AI modelleri • 
             Açık kaynak kodlu eğitim teknolojisi projesi
           </p>
         </motion.div>

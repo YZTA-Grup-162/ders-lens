@@ -189,7 +189,7 @@ export const EnhancedLiveCamera: React.FC = () => {
         console.error('🔴 Analysis error:', err);
         if (errorMsg.includes('fetch') || errorMsg.includes('network')) {
           setConnected(false);
-          setError('❌ Backend connection lost. Please check if the backend is running.');
+          setError('Backend connection lost. Please check if the backend is running.');
         }
       }
     };

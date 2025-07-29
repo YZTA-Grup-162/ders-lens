@@ -6,12 +6,14 @@ import logging
 import time
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+
 import cv2
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from PIL import Image
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 class EmotionModel(nn.Module):
@@ -113,10 +115,10 @@ class EmotionAIDetector:
             self.model.eval()
             self.model_loaded = True
             self.is_emotion_model = True
-            logger.info(f"✅ Successfully loaded emotion model from {model_path}")
+            logger.info(f"Successfully loaded emotion model from {model_path}")
             return True
         except Exception as e:
-            logger.error(f"❌ Failed to load emotion model: {e}")
+            logger.error(f"Failed to load emotion model: {e}")
             self.model_loaded = False
             return False
     def load_binary_model(self, model_path: str) -> bool:
@@ -124,9 +126,10 @@ class EmotionAIDetector:
             logger.info(f"Binary model fallback not implemented yet")
             return False
         except Exception as e:
-            logger.error(f"❌ Failed to load binary model: {e}")
+            logger.error(f"Failed to load binary model: {e}")
             return False
     def preprocess_image(self, image: np.ndarray) -> torch.Tensor:
+        
         try:
             if len(image.shape) == 3 and image.shape[2] == 3:
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)

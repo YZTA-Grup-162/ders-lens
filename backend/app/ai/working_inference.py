@@ -26,8 +26,10 @@ import time
 from collections import deque
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
 import cv2
 import numpy as np
+
 try:
     import mediapipe as mp
     MEDIAPIPE_AVAILABLE = True
@@ -70,6 +72,17 @@ except ImportError:
             pass
     settings = FallbackSettings()
 logger = logging.getLogger(__name__)
+
+# Enhanced components for accurate camera feedback
+try:
+    from .enhanced_calibration import get_calibration_system
+    from .enhanced_inference import get_enhanced_engine
+    from .unified_model_manager import get_model_manager
+    ENHANCED_COMPONENTS_AVAILABLE = True
+    logger.info(" Enhanced components loaded")
+except ImportError:
+    ENHANCED_COMPONENTS_AVAILABLE = False
+    logger.warning("Enhanced components not available - using fallback")
 class HighFidelityAttentionEngine:
     def __init__(self, models_dir: str = "models"):
         self.models_dir = Path(models_dir)
@@ -111,14 +124,14 @@ class HighFidelityAttentionEngine:
             self.hands = None
             self.face_detector = None
             self.pose = None
-            logger.warning("⚠️ MediaPipe not available. Using basic CV fallbacks.")
+            logger.warning("MediaPipe not available. Using basic CV fallbacks.")
         self._load_models()
         try:
             from .measurement_engine import MeasurementEngine
             self.measurement_engine = MeasurementEngine()
-            logger.info("✅ Advanced measurement engine initialized")
+            logger.info(" Advanced measurement engine initialized")
         except ImportError:
-            logger.warning("⚠️ Advanced measurement engine not available")
+            logger.warning("Advanced measurement engine not available")
             self.measurement_engine = None
         self.emotion_labels = {
             0: 'angry', 1: 'disgust', 2: 'fear', 3: 'happy',
@@ -148,7 +161,7 @@ class HighFidelityAttentionEngine:
             'gaze_deviation_threshold': 0.3,
             'head_pose_threshold': {'yaw': 25, 'pitch': 20, 'roll': 15}
         }
-        logger.info("✅ High-Fidelity Attention Engine initialized successfully")
+        logger.info(" High-Fidelity Attention Engine initialized successfully")
     def _load_models(self):
         self.trained_models = {}
         self.model_status = {
@@ -175,7 +188,7 @@ class HighFidelityAttentionEngine:
                 logger.info(f"🎯 Found models base directory: {base_dir}")
                 break
         if base_dir is None:
-            logger.warning("⚠️ Could not find trained models directories")
+            logger.warning("Could not find trained models directories")
             self._setup_fallback_models()
             return
         self._load_daisee_model(base_dir)
@@ -200,13 +213,13 @@ class HighFidelityAttentionEngine:
                         model.eval()
                         self.trained_models['daisee_attention'] = model
                         self.model_status['daisee_attention'] = True
-                        logger.info(f"✅ DAiSEE attention model loaded: {path}")
+                        logger.info(f" DAiSEE attention model loaded: {path}")
                         return
                     else:
-                        logger.warning(f"⚠️ Failed to load DAiSEE model from: {path}")
-            logger.warning(f"⚠️ DAiSEE model not found in any location")
+                        logger.warning(f"Failed to load DAiSEE model from: {path}")
+            logger.warning(f"DAiSEE model not found in any location")
         except Exception as e:
-            logger.error(f"❌ Failed to load DAiSEE model: {e}")
+            logger.error(f"Failed to load DAiSEE model: {e}")
     def _load_fer2013_model(self, base_dir):
         try:
             from .model_architecture_fix import (FER2013EmotionModelFixed,
@@ -220,23 +233,23 @@ class HighFidelityAttentionEngine:
                     model.eval()
                     self.trained_models['fer2013_emotion'] = model
                     self.model_status['fer2013_emotion'] = True
-                    logger.info(f"✅ FER2013 emotion model loaded: {model_path}")
+                    logger.info(f" FER2013 emotion model loaded: {model_path}")
                     return
                 else:
-                    logger.warning(f"⚠️ Failed to load FER2013 PyTorch model from: {model_path}")
+                    logger.warning(f"Failed to load FER2013 PyTorch model from: {model_path}")
             if alt_path.exists() and ONNX_AVAILABLE:
                 try:
                     import onnxruntime as ort
                     session = ort.InferenceSession(str(alt_path))
                     self.trained_models['fer2013_emotion'] = session
                     self.model_status['fer2013_emotion'] = True
-                    logger.info(f"✅ FER2013 ONNX emotion model loaded: {alt_path}")
+                    logger.info(f" FER2013 ONNX emotion model loaded: {alt_path}")
                     return
                 except Exception as e:
-                    logger.warning(f"⚠️ Failed to load ONNX model: {e}")
-            logger.warning(f"⚠️ FER2013 model not found in any location")
+                    logger.warning(f"Failed to load ONNX model: {e}")
+            logger.warning(f"FER2013 model not found in any location")
         except Exception as e:
-            logger.error(f"❌ Failed to load FER2013 model: {e}")
+            logger.error(f"Failed to load FER2013 model: {e}")
     def _load_mendeley_nn_model(self, base_dir):
         try:
             from .model_architecture_fix import (MendeleyAttentionModelFixed,
@@ -249,14 +262,14 @@ class HighFidelityAttentionEngine:
                     model.eval()
                     self.trained_models['mendeley_neural_net'] = model
                     self.model_status['mendeley_neural_net'] = True
-                    logger.info(f"✅ Mendeley neural network loaded (99.12%): {model_path}")
+                    logger.info(f" Mendeley neural network loaded (99.12%): {model_path}")
                     return
                 else:
-                    logger.warning(f"⚠️ Failed to load Mendeley NN model from: {model_path}")
+                    logger.warning(f"Failed to load Mendeley NN model from: {model_path}")
             else:
-                logger.warning(f"⚠️ Mendeley NN model not found: {model_path}")
+                logger.warning(f"Mendeley NN model not found: {model_path}")
         except Exception as e:
-            logger.error(f"❌ Failed to load Mendeley NN model: {e}")
+            logger.error(f"Failed to load Mendeley NN model: {e}")
     def _load_mendeley_ensemble(self, base_dir):
         try:
             models_dir = base_dir / "models_mendeley"
@@ -276,17 +289,17 @@ class HighFidelityAttentionEngine:
                         else:
                             with open(file_path, 'rb') as f:
                                 ensemble[model_name] = pickle.load(f)
-                        logger.info(f"✅ Loaded Mendeley {model_name}")
+                        logger.info(f" Loaded Mendeley {model_name}")
                     except Exception as e:
-                        logger.warning(f"⚠️ Failed to load {model_name}: {e}")
+                        logger.warning(f"Failed to load {model_name}: {e}")
             if len(ensemble) >= 3:
                 self.trained_models['mendeley_ensemble'] = ensemble
                 self.model_status['mendeley_ensemble'] = True
-                logger.info(f"✅ Mendeley ensemble loaded (100% accuracy!) with {len(ensemble)} models")
+                logger.info(f" Mendeley ensemble loaded (100% accuracy!) with {len(ensemble)} models")
             else:
-                logger.warning("⚠️ Insufficient Mendeley ensemble models loaded")
+                logger.warning("Insufficient Mendeley ensemble models loaded")
         except Exception as e:
-            logger.error(f"❌ Failed to load Mendeley ensemble: {e}")
+            logger.error(f"Failed to load Mendeley ensemble: {e}")
     def _load_onnx_model(self, base_dir):
         try:
             possible_paths = [
@@ -299,12 +312,12 @@ class HighFidelityAttentionEngine:
                     try:
                         self.trained_models['onnx_emotion'] = ort.InferenceSession(str(onnx_path))
                         self.model_status['onnx_emotion'] = True
-                        logger.info(f"✅ ONNX emotion model loaded: {onnx_path}")
+                        logger.info(f" ONNX emotion model loaded: {onnx_path}")
                         break
                     except Exception as e:
-                        logger.warning(f"⚠️ Failed to load ONNX from {onnx_path}: {e}")
+                        logger.warning(f"Failed to load ONNX from {onnx_path}: {e}")
         except Exception as e:
-            logger.error(f"❌ Failed to load ONNX model: {e}")
+            logger.error(f"Failed to load ONNX model: {e}")
     def _setup_fallback_models(self):
         logger.warning("🔄 Setting up fallback models - trained models not accessible")
         try:
@@ -315,40 +328,40 @@ class HighFidelityAttentionEngine:
                     self.attention_model = pickle.load(f)
                 with open(attention_scaler_path, 'rb') as f:
                     self.attention_scaler = pickle.load(f)
-                logger.info("✅ Fallback attention model loaded")
+                logger.info(" Fallback attention model loaded")
             else:
                 self.attention_model = None
                 self.attention_scaler = None
-                logger.warning("⚠️ Using heuristic-based attention detection")
+                logger.warning("Using heuristic-based attention detection")
             if TORCH_AVAILABLE:
                 emotion_model_path = self.models_dir / "daisee_emotional_model_best.pth"
                 if emotion_model_path.exists():
                     try:
                         self.emotion_model = torch.load(emotion_model_path, map_location='cpu')
                         self.emotion_model.eval()
-                        logger.info("✅ Emotion model loaded successfully")
+                        logger.info(" Emotion model loaded successfully")
                     except Exception as e:
                         self.emotion_model = None
-                        logger.warning(f"⚠️ Could not load emotion model: {e}")
+                        logger.warning(f"Could not load emotion model: {e}")
                 else:
                     self.emotion_model = None
-                    logger.warning("⚠️ Emotion model not found, using advanced heuristics")
+                    logger.warning("Emotion model not found, using advanced heuristics")
                 gaze_model_path = self.models_dir / "gaze_estimation_model.pth"
                 if gaze_model_path.exists():
                     try:
                         self.gaze_model = torch.load(gaze_model_path, map_location='cpu')
                         self.gaze_model.eval()
-                        logger.info("✅ Gaze estimation model loaded successfully")
+                        logger.info(" Gaze estimation model loaded successfully")
                     except Exception as e:
                         self.gaze_model = None
-                        logger.warning(f"⚠️ Could not load gaze model: {e}")
+                        logger.warning(f"Could not load gaze model: {e}")
                 else:
                     self.gaze_model = None
                     logger.info("ℹ️ Using geometric gaze estimation")
             else:
                 self.emotion_model = None
                 self.gaze_model = None
-                logger.warning("⚠️ PyTorch not available. Using fallback emotion and gaze detection.")
+                logger.warning("PyTorch not available. Using fallback emotion and gaze detection.")
         except Exception as e:
             logger.error(f"Error loading models (working_inference.py): {e}")
             self.attention_model = None
@@ -373,7 +386,7 @@ class HighFidelityAttentionEngine:
                     'y_model': LinearRegression().fit(gaze_poly, screen_points[:, 1]),
                     'poly_features': poly
                 }
-                logger.info("✅ Gaze calibration completed successfully")
+                logger.info(" Gaze calibration completed successfully")
                 return True
             except ImportError:
                 screen_points = np.array(calibration_points)
@@ -383,10 +396,10 @@ class HighFidelityAttentionEngine:
                     'gaze_points': gaze_points,
                     'type': 'simple'
                 }
-                logger.info("✅ Basic gaze calibration completed (sklearn not available)")
+                logger.info(" Basic gaze calibration completed (sklearn not available)")
                 return True
         except Exception as e:
-            logger.error(f"❌ Gaze calibration failed: {e}")
+            logger.error(f"Gaze calibration failed: {e}")
             return False
     def set_screen_bounds(self, x: int, y: int, width: int, height: int):
         self.screen_bounds = {'x': x, 'y': y, 'width': width, 'height': height}

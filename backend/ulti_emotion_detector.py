@@ -6,6 +6,7 @@ import logging
 import os
 import time
 from pathlib import Path
+
 import cv2
 import numpy as np
 import torch
@@ -13,8 +14,9 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 from PIL import Image
 from torchvision.models import ResNet18_Weights, resnet18
+
 logger = logging.getLogger(__name__)
-class UltimateEmotionModel(nn.Module):
+class UltiEmotionModel(nn.Module):
   
     def __init__(self, num_classes=7, dropout_rate=0.5):
         super().__init__()
@@ -34,7 +36,7 @@ class UltimateEmotionModel(nn.Module):
         )
     def forward(self, x):
         return self.backbone(x)
-class UltimateEmotionDetector:
+class UltiEmotionDetector:
     def __init__(self, model_path=None):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = None
@@ -49,7 +51,7 @@ class UltimateEmotionDetector:
             )
         ])
         if model_path is None:
-            model_path = Path("../attention_pulse/ultimate_emotion_output/ultimate_model_best.pth")
+            model_path = Path("../attention_pulse/ulti_emotion_output/ulti_model_best.pth")
         self.model_loaded = self.load_model(model_path)
         self.emotion_to_attention = {
             'Happy': 0.9,      # Very attentive
@@ -60,26 +62,25 @@ class UltimateEmotionDetector:
             'Sad': 0.3,        # Low attention (distracted by sadness)
             'Disgust': 0.2     # Very low attention (strong negative emotion)
         }
-        logger.info(f"🎭 Ultimate Emotion Detector initialized (device: {self.device})")
         logger.info(f"📊 Model loaded: {self.model_loaded}")
     def load_model(self, model_path):
         try:
             if not os.path.exists(model_path):
                 logger.warning(f"⚠️ Model file not found: {model_path}")
                 return False
-            self.model = UltimateEmotionModel(num_classes=7, dropout_rate=0.4)
+            self.model = UltiEmotionModel(num_classes=7, dropout_rate=0.4)
             checkpoint = torch.load(model_path, map_location=self.device)
             self.model.load_state_dict(checkpoint['model_state_dict'])
             self.model.to(self.device)
             self.model.eval()
             val_accuracy = checkpoint.get('val_accuracy', 0)
             epoch = checkpoint.get('epoch', 0)
-            logger.info(f"✅ Ultimate emotion model loaded successfully")
+            logger.info(f"✅ Ulti emotion model loaded successfully")
             logger.info(f"📈 Model accuracy: {val_accuracy:.2f}% (epoch {epoch})")
             logger.info(f"🧠 Transfer learning: ResNet18 + fine-tuning")
             return True
         except Exception as e:
-            logger.error(f"❌ Failed to load ultimate emotion model: {e}")
+            logger.error(f" Failed to load emotion model: {e}")
             return False
     def detect_faces(self, frame):
         try:
@@ -154,7 +155,7 @@ class UltimateEmotionDetector:
                     "primary_emotion": "unknown",
                     "emotion_confidence": 0.0,
                     "face_detected": False,
-                    "model_type": "UltimateEmotionResNet18",
+                    "model_type": "UltiEmotionResNet18",
                     "processing_time": time.time() - start_time,
                     "distractions": ["No face visible"],
                     "timestamp": time.time()
@@ -186,7 +187,7 @@ class UltimateEmotionDetector:
                 "primary_emotion": primary_emotion.lower(),
                 "emotion_confidence": emotion_confidence,
                 "face_detected": True,
-                "model_type": "UltimateEmotionResNet18",
+                "model_type": "UltiEmotionResNet18",
                 "model_accuracy": "34%+ (Transfer Learning)",
                 "processing_time": time.time() - start_time,
                 "distractions": distractions if distractions else ["None detected"],
@@ -206,7 +207,7 @@ class UltimateEmotionDetector:
             "primary_emotion": "unknown",
             "emotion_confidence": 0.0,
             "face_detected": False,
-            "model_type": "UltimateEmotionResNet18",
+            "model_type": "UltiEmotionResNet18",
             "processing_time": time.time() - start_time,
             "distractions": [error_msg] if error_msg else ["Processing failed"],
             "timestamp": time.time(),
@@ -214,7 +215,7 @@ class UltimateEmotionDetector:
         }
     def get_model_info(self):
         return {
-            "model_type": "Ultimate Emotion ResNet18",
+            "model_type": "UltiEmotionResNet18",
             "model_loaded": self.model_loaded,
             "device": str(self.device),
             "emotion_classes": len(self.emotion_labels),
@@ -230,7 +231,7 @@ class UltimateEmotionDetector:
             ]
         }
 if __name__ == "__main__":
-    detector = UltimateEmotionDetector()
+    detector = UltiEmotionDetector()
     test_frame = np.zeros((480, 640, 3), dtype=np.uint8)
     result = detector.predict_attention(test_frame)
     print("Test result:", result)

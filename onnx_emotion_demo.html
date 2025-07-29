@@ -411,7 +411,7 @@
                 }, 500);
             } catch (err) {
                 console.error('Error starting camera:', err);
-                updateStatus('❌ Error starting camera: ' + err.message);
+                updateStatus('Error starting camera: ' + err.message);
             }
         }
         function stopCamera() {
@@ -479,11 +479,11 @@
                             updateResults(result);
                         } else {
                             console.error('Analysis failed:', response.statusText);
-                            updateStatus('❌ Analysis failed: ' + response.statusText);
+                            updateStatus('Analysis failed: ' + response.statusText);
                         }
                     } catch (error) {
                         console.error('Network error:', error);
-                        updateStatus('❌ Network error: ' + error.message);
+                        updateStatus('Network error: ' + error.message);
                     }
                 }, 'image/jpeg', 0.8);
             } catch (error) {
@@ -556,11 +556,11 @@
                 .then(response => response.json())
                 .then(info => {
                     document.getElementById('modelStatus').textContent = 
-                        info.model_loaded ? '✅ Ready' : '❌ Not Loaded';
+                        info.model_loaded ? '✅ Ready' : 'Not Loaded';
                     document.getElementById('modelStatus').classList.remove('loading');
                 })
                 .catch(err => {
-                    document.getElementById('modelStatus').textContent = '❌ Error';
+                    document.getElementById('modelStatus').textContent = 'Error';
                     document.getElementById('modelStatus').classList.remove('loading');
                 });
         });

@@ -1,24 +1,26 @@
-import onnx
 import os
+
+import onnx
+
 
 def check_onnx_model(model_path):
     print(f"Checking ONNX model at: {model_path}")
     
     if not os.path.exists(model_path):
-        print("❌ Error: Model file does not exist")
+        print("Error: Model file does not exist")
         return False
         
     file_size = os.path.getsize(model_path) / (1024 * 1024)
-    print(f"✅ Model file exists. Size: {file_size:.2f} MB")
+    print(f" Model file exists. Size: {file_size:.2f} MB")
     
     try:
         print("\nAttempting to load ONNX model...")
         model = onnx.load(model_path)
-        print("✅ ONNX model loaded successfully")
+        print(" ONNX model loaded successfully")
         
         print("\nChecking model validity...")
         onnx.checker.check_model(model)
-        print("✅ ONNX model is valid")
+        print(" ONNX model is valid")
         
         print("\nModel Info:")
         print(f"  IR Version: {model.ir_version}")
@@ -35,7 +37,7 @@ def check_onnx_model(model_path):
         return True
         
     except Exception as e:
-        print(f"\n❌ Error checking ONNX model: {str(e)}")
+        print(f"\nError checking ONNX model: {str(e)}")
         import traceback
         traceback.print_exc()
         return False

@@ -12,6 +12,13 @@ import psutil
 import torch
 from torch.utils.data import DataLoader
 
+try:
+    import pythoncom
+    import wmi
+    HAS_WMI = True
+except ImportError:
+    HAS_WMI = False
+
 logger = logging.getLogger(__name__)
 class ThermalManager:
     """
@@ -28,6 +35,8 @@ class ThermalManager:
         self.check_interval = check_interval
         self.monitoring = False
         self.thermal_throttling = False
+        self.temperature_history = []  # Initialize temperature history
+        self.monitor_thread = None  # Initialize monitor thread
         self.cooling_strategies = {
             'reduce_batch_size': False,
             'reduce_workers': False,
@@ -38,15 +47,30 @@ class ThermalManager:
         self.original_settings = {}
     def get_cpu_temperature(self):
         if platform.system() == "Windows":
-            try:
-                import wmi
-                c = wmi.WMI(namespace="root\\wmi")
-                temperature_info = c.MSAcpi_ThermalZoneTemperature()
-                if temperature_info:
-                    temp_kelvin = temperature_info[0].CurrentTemperature
-                    return (temp_kelvin / 10.0) - 273.15
-            except Exception as e:
-                logger.warning(f"Error getting Windows CPU temperature: {e}")
+            if HAS_WMI:
+                try:
+                    # Use CoInitializeEx with COINIT_APARTMENTTHREADED for safer multi-threaded COM initialization
+                    try:
+                        pythoncom.CoInitializeEx(pythoncom.COINIT_APARTMENTTHREADED)
+                        com_initialized = True
+                    except pythoncom.com_error as com_err:
+                        logger.debug(f"COM already initialized or error: {com_err}")
+                        com_initialized = False
+                    try:
+                        c = wmi.WMI(namespace="root\\wmi")
+                        temperature_info = c.MSAcpi_ThermalZoneTemperature()
+                        if temperature_info:
+                            temp_kelvin = temperature_info[0].CurrentTemperature
+                            return (temp_kelvin / 10.0) - 273.15
+                    except Exception as inner_e:
+                        logger.debug(f"WMI inner exception: {inner_e}")
+                    finally:
+                        if com_initialized:
+                            pythoncom.CoUninitialize()
+                except Exception as e:
+                    logger.debug(f"WMI temperature reading failed: {e}. Ensure 'pywin32' and 'wmi' packages are installed for WMI support on Windows (pip install pywin32 wmi).")
+            else:
+                logger.debug("WMI or pythoncom not available for Windows temperature reading.")
             
             # Fallback for Windows if WMI fails
             try:
@@ -101,7 +125,9 @@ class ThermalManager:
             stats['gpu_memory_allocated'] = torch.cuda.memory_allocated() / 1024**3  # GB
             stats['gpu_memory_reserved'] = torch.cuda.memory_reserved() / 1024**3  # GB
         return stats
-        return stats
+
+    def apply_cooling_strategy(self, strategy, dataloader_kwargs=None, model=None):
+        """Apply thermal cooling strategy"""
         logger.info(f"🌡️ Applying cooling strategy: {strategy}")
         if strategy == 'reduce_batch_size':
             if dataloader_kwargs and 'batch_size' in dataloader_kwargs:
@@ -177,10 +203,10 @@ class ThermalManager:
                     self.log_temperature()
                     if current_temp:
                         if state == "critical":
-                            logger.error(f"🔥 CRITICAL TEMPERATURE: {current_temp}°C")
+                            logger.error(f"KRİTİK SICAKLIK: {current_temp}°C")
                             self.thermal_throttling = True
                         elif state == "warning":
-                            logger.warning(f"⚠️ HIGH TEMPERATURE: {current_temp}°C")
+                            logger.warning(f"YÜKSEK SICAKLIK: {current_temp}°C")
                             self.thermal_throttling = True
                         elif state == "elevated":
                             logger.info(f"🌡️ Elevated temperature: {current_temp}°C")
@@ -210,13 +236,13 @@ class ThermalManager:
     def is_safe_to_train(self):
         current_temp = self.get_current_temperature()
         if current_temp is None:
-            logger.error("❌ Cannot determine system temperature, stopping training for safety")
+            logger.error("Cannot determine system temperature, stopping training for safety")
             return False
         if current_temp >= self.max_temp:
-            logger.error(f"🔥 Temperature too high: {current_temp}°C (max: {self.max_temp}°C)")
+            logger.error(f"Temperature too high: {current_temp}°C (max: {self.max_temp}°C)")
             return False
         elif current_temp >= self.warning_temp:
-            logger.warning(f"⚠️ Temperature elevated: {current_temp}°C (warning: {self.warning_temp}°C)")
+            logger.warning(f"Temperature elevated: {current_temp}°C (warning: {self.warning_temp}°C)")
             return True
         else:
             return True

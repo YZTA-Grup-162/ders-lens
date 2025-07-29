@@ -113,10 +113,10 @@ class EmotionAIDetector:
             self.model.eval()
             self.model_loaded = True
             self.is_emotion_model = True
-            logger.info(f"✅ Successfully loaded emotion model from {model_path}")
+            logger.info(f"Successfully loaded emotion model from {model_path}")
             return True
         except Exception as e:
-            logger.error(f"❌ Failed to load emotion model: {e}")
+            logger.error(f"Failed to load emotion model: {e}")
             self.model_loaded = False
             return False
     def load_binary_model(self, model_path: str) -> bool:
@@ -124,7 +124,7 @@ class EmotionAIDetector:
             logger.info(f"Binary model fallback not implemented yet")
             return False
         except Exception as e:
-            logger.error(f"❌ Failed to load binary model: {e}")
+            logger.error(f"Failed to load binary model: {e}")
             return False
     def preprocess_image(self, image: np.ndarray) -> torch.Tensor:
         try:

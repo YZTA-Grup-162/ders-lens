@@ -8,8 +8,10 @@ import time
 from collections import deque
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
 import cv2
 import numpy as np
+
 try:
     import mediapipe as mp
     MEDIAPIPE_AVAILABLE = True
@@ -22,6 +24,7 @@ except ImportError:
     ONNX_AVAILABLE = False
 try:
     import pickle
+
     import torch
     TORCH_AVAILABLE = True
 except ImportError:
@@ -98,9 +101,9 @@ class StudentDemo:
             try:
                 self.models['emotion_onnx'] = ort.InferenceSession(str(onnx_path))
                 self.trained_features['emotion_detection'] = True
-                logger.info(f"✅ Loaded TRAINED ONNX emotion model: {onnx_path}")
+                logger.info(f"Loaded TRAINED ONNX emotion model: {onnx_path}")
             except Exception as e:
-                logger.error(f"❌ Failed to load ONNX emotion model: {e}")
+                logger.error(f"Failed to load ONNX emotion model: {e}")
         else:
             logger.warning(f"⚠️ ONNX emotion model not found at: {onnx_path}")
         torch_path = self.models_dir / "daisee_emotional_model_best.pth"
@@ -111,19 +114,19 @@ class StudentDemo:
                     self.models['attention_torch'] = torch.load(torch_path, map_location='cpu')
                     self.models['attention_torch'].eval()
                     self.trained_features['attention_analysis'] = True
-                    logger.info(f"✅ Loaded TRAINED PyTorch attention model: {torch_path} ({file_size} bytes)")
+                    logger.info(f"Loaded TRAINED PyTorch attention model: {torch_path} ({file_size} bytes)")
                 else:
                     logger.warning(f"⚠️ PyTorch model too small, likely untrained: {file_size} bytes")
             except Exception as e:
-                logger.error(f"❌ Failed to load PyTorch model: {e}")
+                logger.error(f"Failed to load PyTorch model: {e}")
         else:
             logger.warning(f"⚠️ PyTorch attention model not found at: {torch_path}")
-        logger.info("⏭️ Skipping sklearn engagement models (not trained yet)")
+        logger.info("Skipping sklearn engagement models (not trained yet)")
         self.trained_features['gaze_tracking'] = True
-        logger.info("✅ Gaze tracking enabled (geometric estimation)")
+        logger.info("Gaze tracking enabled (geometric estimation)")
         if MEDIAPIPE_AVAILABLE:
             self.trained_features['posture_analysis'] = True
-            logger.info("✅ Basic posture analysis enabled (MediaPipe)")
+            logger.info("Basic posture analysis enabled (MediaPipe)")
         loaded_count = sum(self.trained_features.values())
         if loaded_count > 0:
             self.model_version = f"demo-v1.0-partial-{loaded_count}features"
@@ -155,7 +158,7 @@ class StudentDemo:
         if AUDIO_ANALYSIS_AVAILABLE:
             try:
                 self.audio_analyzer = AudioEngagementAnalyzer()
-                logger.info("✅ Audio analysis enabled")
+                logger.info("Audio analysis enabled")
             except Exception as e:
                 logger.warning(f"Audio analysis initialization failed: {e}")
                 self.audio_analyzer = None

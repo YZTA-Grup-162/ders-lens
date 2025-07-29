@@ -1,14 +1,19 @@
-# Development Dockerfile for frontend
+# Development Dockerfile for DersLens frontend
 FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
 
-RUN npm install
+# Install dependencies with legacy peer deps to avoid conflicts
+RUN npm install --legacy-peer-deps
 
+# Copy source code
 COPY . .
 
+# Expose Vite development server port
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Start Vite development server
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

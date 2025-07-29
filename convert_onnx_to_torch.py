@@ -17,7 +17,7 @@ def convert_onnx_to_torch(onnx_path, output_path):
     print("Verifying ONNX model...")
     onnx_model = onnx.load(onnx_path)
     onnx.checker.check_model(onnx_model)
-    print("✅ ONNX model is valid")
+    print(" ONNX model is valid")
     
     # Get input/output names and shapes
     session = ort.InferenceSession(onnx_path, providers=['CPUExecutionProvider'])
@@ -55,14 +55,14 @@ def convert_onnx_to_torch(onnx_path, output_path):
     dummy_input = torch.randn(1, 1, 48, 48)  
     try:
         output = model(dummy_input)
-        print(f"✅ Model test successful. Output shape: {output.shape}")
+        print(f" Model test successful. Output shape: {output.shape}")
     except Exception as e:
         print(f"⚠️  Model test failed: {e}")
     
     # Save the model
     print(f"Saving PyTorch model to {output_path}...")
     torch.save(model.state_dict(), output_path)
-    print("✅ Conversion complete!")
+    print(" Conversion complete!")
     return output_path
 
 if __name__ == "__main__":

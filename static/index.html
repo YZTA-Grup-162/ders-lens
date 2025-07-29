@@ -104,8 +104,8 @@
         </div>
         
         <div class="controls">
-            <button onclick="connect()" class="secondary">🔌 Connect</button>
-            <button onclick="disconnect()" class="danger">❌ Disconnect</button>
+            <button onclick="connect()" class="secondary">Connect</button>
+            <button onclick="disconnect()" class="danger">Disconnect</button>
             <button onclick="sendPing()">📤 Send Ping</button>
             <button onclick="clearLog()">🗑️ Clear Log</button>
         </div>
@@ -161,19 +161,19 @@
         
         function connect() {
             if (socket && socket.readyState === WebSocket.OPEN) {
-                log('❌ Already connected', 'warning');
+                log('Already connected', 'warning');
                 return;
             }
             
             const wsUrl = 'ws://localhost:8000/ws/student/docker_test_user';
-            log(`🔌 Connecting to: ${wsUrl}`, 'info');
+            log(`Connecting to: ${wsUrl}`, 'info');
             updateStatus('🟡 Connecting...', 'connecting');
             
             try {
                 socket = new WebSocket(wsUrl);
                 
                 socket.onopen = function(event) {
-                    log('✅ WebSocket connected successfully!', 'success');
+                    log('WebSocket connected successfully!', 'success');
                     updateStatus('🟢 Connected', 'connected');
                 };
                 
@@ -203,7 +203,7 @@
                 };
                 
                 socket.onclose = function(event) {
-                    log(`❌ Connection closed: Code ${event.code}, Reason: ${event.reason || 'No reason'}`, 'error');
+                    log(`Connection closed: Code ${event.code}, Reason: ${event.reason || 'No reason'}`, 'error');
                     updateStatus('🔴 Disconnected', 'disconnected');
                     socket = null;
                 };
@@ -214,17 +214,17 @@
                 };
                 
             } catch (error) {
-                log(`❌ Failed to create WebSocket: ${error.message}`, 'error');
+                log(`Failed to create WebSocket: ${error.message}`, 'error');
                 updateStatus('🚨 Error', 'disconnected');
             }
         }
         
         function disconnect() {
             if (socket) {
-                log('🔌 Manually closing connection...', 'info');
+                log('Manually closing connection...', 'info');
                 socket.close();
             } else {
-                log('❌ No connection to close', 'warning');
+                log('No connection to close', 'warning');
             }
         }
         
@@ -238,7 +238,7 @@
                 socket.send(JSON.stringify(message));
                 log(`📤 Sent ping: ${JSON.stringify(message)}`, 'info');
             } else {
-                log('❌ Cannot send ping - not connected', 'error');
+                log('Cannot send ping - not connected', 'error');
             }
         }
         
@@ -251,7 +251,7 @@
         window.onload = function() {
             log('🚀 AttentionPulse Docker frontend loaded', 'success');
             log('📝 Browser: ' + navigator.userAgent, 'info');
-            log('🔌 WebSocket support: ' + (typeof WebSocket !== 'undefined' ? 'Available' : 'Not available'), 'info');
+            log('WebSocket support: ' + (typeof WebSocket !== 'undefined' ? 'Available' : 'Not available'), 'info');
             
             // Auto-connect after 2 seconds
             setTimeout(() => {

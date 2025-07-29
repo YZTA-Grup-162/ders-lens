@@ -3,9 +3,12 @@ OpenCV utilities for attention detection
 """
 import math
 from typing import Dict, Optional, Tuple
+
 import cv2
 import mediapipe as mp
 import numpy as np
+
+
 class AttentionDetector:
     def __init__(self):
         self.mp_face_mesh = mp.solutions.face_mesh
@@ -144,7 +147,11 @@ class AttentionDetector:
         }
 def test_attention_detector():
     detector = AttentionDetector()
-    cap = cv2.VideoCapture(0)
+    # Use DirectShow backend that we confirmed works
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    cap.set(cv2.CAP_PROP_FPS, 15)
     if not cap.isOpened():
         print("Error: Could not open webcam")
         return

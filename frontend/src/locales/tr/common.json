@@ -1,0 +1,303 @@
+{
+  "nav": {
+    "dashboard": "Gösterge Paneli",
+    "liveClass": "Canlı Ders",
+    "analytics": "Analitik",
+    "settings": "Ayarlar",
+    "logout": "Çıkış"
+  },
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "success": "Başarılı",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "view": "Görüntüle",
+    "close": "Kapat",
+    "back": "Geri",
+    "next": "İleri",
+    "previous": "Önceki",
+    "refresh": "Yenile",
+    "search": "Ara",
+    "filter": "Filtrele",
+    "clear": "Temizle",
+    "all": "Tümü",
+    "none": "Hiçbiri"
+  },
+  "auth": {
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "email": "E-posta",
+    "password": "Şifre",
+    "confirmPassword": "Şifreyi Onayla",
+    "forgotPassword": "Şifremi Unuttum",
+    "rememberMe": "Beni Hatırla",
+    "loginSuccess": "Başarıyla giriş yapıldı",
+    "loginError": "Giriş yapılırken hata oluştu",
+    "invalidCredentials": "Geçersiz kullanıcı bilgileri"
+  },
+  "teacher": {
+    "dashboard": {
+      "title": "Öğretmen Paneli",
+      "liveSession": "Canlı Ders",
+      "classOverview": "Sınıf Özeti",
+      "studentCount": "Öğrenci Sayısı",
+      "sessionDuration": "Ders Süresi",
+      "averageAttention": "Ortalama Dikkat"
+    },
+    "attention": {
+      "title": "Dikkat Seviyesi",
+      "current": "Şu Anki Ortalama",
+      "trend": "Eğilim",
+      "alerts": "Uyarılar",
+      "timeline": "Dikkat Zaman Çizelgesi",
+      "distribution": "Dikkat Dağılımı",
+      "individual": "Bireysel Dikkat",
+      "veryHigh": "Çok Yüksek",
+      "high": "Yüksek",
+      "medium": "Orta",
+      "low": "Düşük",
+      "veryLow": "Çok Düşük"
+    },
+    "participation": {
+      "title": "Katılım Metrikleri",
+      "cameraOn": "Kamera Açık",
+      "micActive": "Mikrofon Aktif",
+      "speaking": "Konuşma Süreleri",
+      "chatActive": "Sohbet Etkinliği",
+      "handRaises": "El Kaldırma",
+      "engagementLevel": "Katılım Seviyesi",
+      "activeStudents": "Aktif Öğrenciler",
+      "totalInteractions": "Toplam Etkileşim"
+    },
+    "emotions": {
+      "title": "Duygu Analizi",
+      "dominant": "Baskın Duygu",
+      "distribution": "Duygu Dağılımı",
+      "trend": "Duygu Eğilimi",
+      "happy": "Mutlu",
+      "neutral": "Nötr",
+      "focused": "Odaklanmış",
+      "confused": "Kafası Karışık",
+      "frustrated": "Sinirli",
+      "surprised": "Şaşırmış",
+      "sad": "Üzgün",
+      "improving": "İyileşiyor",
+      "declining": "Kötüleşiyor",
+      "stable": "Kararlı"
+    },
+    "suggestions": {
+      "title": "AI Önerileri",
+      "subtitle": "Sınıf katılımını artırmanız için öneriler",
+      "breakoutRooms": "Grup çalışması öner",
+      "quickPoll": "Hızlı anket başlat",
+      "energizer": "Canlandırıcı etkinlik",
+      "breakTime": "Mola zamanı",
+      "interactiveContent": "Etkileşimli içerik",
+      "checkUnderstanding": "Anlayış kontrolü",
+      "confidence": "Güvenilirlik",
+      "timeToImplement": "Uygulama Süresi",
+      "expectedImpact": "Beklenen Etki",
+      "implement": "Uygula",
+      "dismiss": "Reddet"
+    },
+    "alerts": {
+      "title": "Uyarılar",
+      "lowAttention": "Düşük Dikkat",
+      "lowParticipation": "Düşük Katılım",
+      "technicalIssue": "Teknik Sorun",
+      "studentLeft": "Öğrenci Ayrıldı",
+      "attentionDrop": "{{studentName}} dikkat seviyesi düştü",
+      "noParticipation": "{{studentName}} katılım göstermiyor",
+      "cameraOff": "{{studentName}} kamerasını kapattı",
+      "connectionIssue": "{{studentName}} bağlantı sorunu yaşıyor",
+      "acknowledge": "Onayla",
+      "viewDetails": "Detayları Gör",
+      "sendMessage": "Mesaj Gönder"
+    }
+  },
+  "student": {
+    "dashboard": {
+      "title": "Öğrenci Paneli",
+      "joinClass": "Derse Katıl",
+      "currentClass": "Şu Anki Ders",
+      "upcomingClasses": "Yaklaşan Dersler",
+      "recentActivity": "Son Etkinlik"
+    },
+    "feedback": {
+      "title": "Kişisel Geri Bildirim",
+      "subtitle": "Ders boyunca performansınız",
+      "attention": "Dikkat Puanınız",
+      "participation": "Katılım Puanınız",
+      "engagement": "Katılım Seviyeniz",
+      "improvement": "İyileştirme Önerileri",
+      "privacy": "Veriler anonim tutulur",
+      "personalData": "Kişisel verileriniz güvende",
+      "liveScore": "Canlı Puan",
+      "sessionAverage": "Ders Ortalaması",
+      "weeklyTrend": "Haftalık Eğilim",
+      "tips": "İpuçları"
+    },
+    "badges": {
+      "title": "Rozetler",
+      "earned": "Kazanılan",
+      "inProgress": "Devam Eden",
+      "available": "Mevcut",
+      "activeParticipant": "Aktif Katılımcı",
+      "focused": "Odaklanmış",
+      "helpful": "Yardımsever",
+      "engaged": "Katılımcı",
+      "consistent": "Tutarlı",
+      "earnedOn": "Kazanıldı:",
+      "progress": "İlerleme",
+      "requirements": "Gereksinimler"
+    },
+    "controls": {
+      "camera": "Kamera",
+      "microphone": "Mikrofon",
+      "chat": "Sohbet",
+      "handRaise": "El Kaldır",
+      "screenShare": "Ekran Paylaş",
+      "settings": "Ayarlar",
+      "leave": "Dersten Ayrıl"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Yönetici Paneli",
+      "systemHealth": "Sistem Durumu",
+      "activeUsers": "Aktif Kullanıcılar",
+      "activeSessions": "Aktif Oturumlar",
+      "systemLoad": "Sistem Yükü"
+    },
+    "users": {
+      "title": "Kullanıcı Yönetimi",
+      "teachers": "Öğretmenler",
+      "students": "Öğrenciler",
+      "admins": "Yöneticiler",
+      "addUser": "Kullanıcı Ekle",
+      "editUser": "Kullanıcı Düzenle",
+      "deleteUser": "Kullanıcıyı Sil",
+      "userDetails": "Kullanıcı Detayları",
+      "lastLogin": "Son Giriş",
+      "status": "Durum",
+      "role": "Rol"
+    },
+    "settings": {
+      "title": "Sistem Ayarları",
+      "general": "Genel",
+      "security": "Güvenlik",
+      "notifications": "Bildirimler",
+      "integrations": "Entegrasyonlar",
+      "demo": "Demo Ayarları",
+      "language": "Dil",
+      "theme": "Tema",
+      "timezone": "Saat Dilimi"
+    }
+  },
+  "demo": {
+    "title": "DersLens Demo",
+    "subtitle": "Canlı sınıf analitiği deneyimi",
+    "joinButton": "Demo Sınıfına Katıl",
+    "viewTeacher": "Öğretmen Görünümünü İncele",
+    "scenario": "Demo Senaryosu",
+    "replay": "Tekrar Oynat",
+    "speed": "Hız",
+    "timeline": "Zaman Çizelgesi",
+    "events": "Olaylar",
+    "student": {
+      "welcome": "Demo sınıfına hoş geldiniz!",
+      "instructions": "Bu demo sırasında gerçek bir öğrenci deneyimi yaşayacaksınız.",
+      "duration": "Demo süresi: 15 dakika",
+      "features": "Dikkat takibi, katılım ölçümü ve kişisel geri bildirim deneyimleyeceksiniz.",
+      "privacy": "Bu bir demo oturumudur, gerçek veri kaydedilmez."
+    },
+    "teacher": {
+      "welcome": "Öğretmen paneline hoş geldiniz!",
+      "overview": "Bu panel gerçek zamanlı sınıf analitiği sunar.",
+      "features": "Dikkat takibi, katılım metrikleri, duygu analizi ve AI önerilerini görüntüleyebilirsiniz.",
+      "controls": "Demo kontrollerini kullanarak farklı senaryoları test edebilirsiniz."
+    },
+    "controls": {
+      "play": "Oynat",
+      "pause": "Duraklat",
+      "reset": "Sıfırla",
+      "jumpTo": "Atla",
+      "hotkeys": "Kısayollar",
+      "toggleData": "Veri Görünümü",
+      "triggerEvent": "Olay Tetikle"
+    },
+    "scenarios": {
+      "standard": "Standart Ders",
+      "interactive": "Etkileşimli Ders",
+      "challenging": "Zorlu Ders",
+      "groupWork": "Grup Çalışması",
+      "presentation": "Sunum"
+    },
+    "juror": {
+      "evaluation": "Jüri Değerlendirmesi",
+      "completed": "Demo tamamlandı!",
+      "feedback": "Geri bildirimlerinizi bekliyoruz",
+      "nextSteps": "Sonraki adımlar",
+      "teacherView": "Öğretmen görünümünü keşfedin",
+      "documentation": "Dokümantasyonu inceleyin"
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "profile": "Profil",
+    "preferences": "Tercihler",
+    "notifications": "Bildirimler",
+    "privacy": "Gizlilik",
+    "accessibility": "Erişilebilirlik",
+    "language": {
+      "title": "Dil",
+      "turkish": "Türkçe",
+      "english": "English",
+      "autoDetect": "Otomatik Algıla"
+    },
+    "theme": {
+      "title": "Tema",
+      "dark": "Koyu",
+      "light": "Açık",
+      "auto": "Sistem"
+    },
+    "accessibilityOptions": {
+      "title": "Erişilebilirlik Seçenekleri",
+      "reducedMotion": "Azaltılmış Hareket",
+      "highContrast": "Yüksek Kontrast",
+      "fontSize": "Yazı Boyutu",
+      "screenReader": "Ekran Okuyucu Desteği"
+    },
+    "notificationSettings": {
+      "sound": "Ses Bildirimleri",
+      "visual": "Görsel Bildirimler",
+      "attention": "Dikkat Uyarıları",
+      "participation": "Katılım Bildirimleri",
+      "sentiment": "Duygu Değişiklikleri"
+    }
+  },
+  "errors": {
+    "404": "Sayfa bulunamadı",
+    "500": "Sunucu hatası",
+    "networkError": "Ağ bağlantısı hatası",
+    "unauthorized": "Yetkisiz erişim",
+    "forbidden": "Erişim engellendi",
+    "sessionExpired": "Oturum süresi doldu",
+    "tryAgain": "Tekrar dene",
+    "contactSupport": "Destek ile iletişime geç",
+    "goHome": "Ana sayfaya dön"
+  },
+  "tooltips": {
+    "attention": "Öğrencilerin derse odaklanma seviyesi",
+    "participation": "Aktif katılım göstergesi",
+    "emotion": "Sınıfın genel ruh hali",
+    "alert": "Dikkat gerektiren durum",
+    "suggestion": "AI destekli iyileştirme önerisi",
+    "badge": "Başarı rozeti",
+    "demo": "Demo modu aktif",
+    "live": "Canlı veri akışı"
+  }
+}

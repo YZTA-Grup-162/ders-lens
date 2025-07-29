@@ -91,7 +91,7 @@ class EnhancedProfessionalDemo:
             model_complexity=2,
             min_detection_confidence=0.8
         )
-        logger.info("✅ MediaPipe initialized with high-precision settings")
+        logger.info("MediaPipe initialized with high-precision settings")
     def _load_all_trained_models(self):
         self.models = {}
         possible_paths = [
@@ -124,9 +124,9 @@ class EnhancedProfessionalDemo:
                     self.models['daisee_attention'].load_state_dict(checkpoint)
                 self.models['daisee_attention'].eval()
                 self.trained_features['daisee_attention'] = True
-                logger.info(f"✅ Loaded DAiSEE attention model: {daisee_path}")
+                logger.info(f"Loaded DAiSEE attention model: {daisee_path}")
             except Exception as e:
-                logger.error(f"❌ Failed to load DAiSEE model: {e}")
+                logger.error(f" Failed to load DAiSEE model: {e}")
         fer2013_path = base_dir / "models_fer2013" / "fer2013_emotion_best.pth"
         if fer2013_path.exists() and TORCH_AVAILABLE:
             try:
@@ -140,18 +140,18 @@ class EnhancedProfessionalDemo:
                     self.models['fer2013_emotion'].load_state_dict(checkpoint)
                 self.models['fer2013_emotion'].eval()
                 self.trained_features['fer2013_emotion'] = True
-                logger.info(f"✅ Loaded FER2013 emotion model: {fer2013_path}")
+                logger.info(f"Loaded FER2013 emotion model: {fer2013_path}")
             except Exception as e:
-                logger.error(f"❌ Failed to load FER2013 model: {e}")
+                logger.error(f"Failed to load FER2013 model: {e}")
         mendeley_rf_path = base_dir / "models_mendeley" / "mendeley_random_forest.pkl"
         if mendeley_rf_path.exists():
             try:
                 with open(mendeley_rf_path, 'rb') as f:
                     self.models['mendeley_neural_net'] = joblib.load(f)
                 self.trained_features['mendeley_neural_net'] = True
-                logger.info(f"✅ Loaded Mendeley Random Forest model: {mendeley_rf_path}")
+                logger.info(f"Loaded Mendeley Random Forest model: {mendeley_rf_path}")
             except Exception as e:
-                logger.error(f"❌ Failed to load Mendeley neural network: {e}")
+                logger.error(f"Failed to load Mendeley neural network: {e}")
         if SKLEARN_AVAILABLE:
             mendeley_dir = base_dir / "models_mendeley"
             ensemble_models = [
@@ -167,13 +167,13 @@ class EnhancedProfessionalDemo:
                     try:
                         with open(model_path, 'rb') as f:
                             loaded_ensemble[model_name] = pickle.load(f)
-                        logger.info(f"✅ Loaded Mendeley {model_name}: {model_path}")
+                        logger.info(f"Loaded Mendeley {model_name}: {model_path}")
                     except Exception as e:
                         logger.warning(f"⚠️ Failed to load {model_name}: {e}")
             if len(loaded_ensemble) >= 3:
                 self.models['mendeley_ensemble'] = loaded_ensemble
                 self.trained_features['mendeley_ensemble'] = True
-                logger.info(f"✅ Loaded Mendeley ensemble with {len(loaded_ensemble)} models")
+                logger.info(f"Loaded Mendeley ensemble with {len(loaded_ensemble)} models")
         onnx_paths = [
             base_dir / "models" / "onnx" / "best_model.onnx",
             base_dir / "backend" / "models" / "onnx" / "best_model.onnx",
@@ -184,7 +184,7 @@ class EnhancedProfessionalDemo:
                 try:
                     self.models['onnx_emotion'] = ort.InferenceSession(str(onnx_path))
                     self.trained_features['onnx_emotion'] = True
-                    logger.info(f"✅ Loaded ONNX emotion model: {onnx_path}")
+                    logger.info(f"Loaded ONNX emotion model: {onnx_path}")
                     break
                 except Exception as e:
                     logger.warning(f"⚠️ Failed to load ONNX from {onnx_path}: {e}")

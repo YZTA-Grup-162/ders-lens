@@ -2,12 +2,15 @@
 OpenCV utilities for attention detection
 """
 
+import logging
 import math
 from typing import Dict, Optional, Tuple
 
 import cv2
 import mediapipe as mp
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 class AttentionDetector:
@@ -45,7 +48,7 @@ class AttentionDetector:
     
     def calculate_head_pose(self, frame: np.ndarray) -> Dict[str, float]:
         """
-        Calculate head pose angles using MediaPipe
+        Calculate head pose angles using MediaPipe with improved accuracy
         Returns: {x_angle, y_angle, z_angle, confidence}
         """
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -55,36 +58,102 @@ class AttentionDetector:
             return {"x_angle": 0, "y_angle": 0, "z_angle": 0, "confidence": 0}
         
         face_landmarks = results.multi_face_landmarks[0]
-        
-        # Get specific landmarks for head pose calculation
-        # Nose tip, chin, left ear, right ear
         h, w = frame.shape[:2]
         
-        # Convert normalized coordinates to pixel coordinates
-        landmarks_3d = []
-        landmarks_2d = []
+        # Use specific landmarks for more accurate head pose
+        # Key points: nose tip, chin, left/right eye corners, left/right mouth corners
+        key_points_2d = []
+        key_points_3d = []
         
-        for landmark in face_landmarks.landmark:
+        # Define key landmark indices
+        key_indices = [
+            1,    # Nose tip
+            152,  # Chin
+            33,   # Left eye outer corner
+            263,  # Right eye outer corner
+            61,   # Left mouth corner
+            291   # Right mouth corner
+        ]
+        
+        for idx in key_indices:
+            landmark = face_landmarks.landmark[idx]
             x = int(landmark.x * w)
             y = int(landmark.y * h)
-            landmarks_2d.append([x, y])
-            landmarks_3d.append([x, y, landmark.z])
+            key_points_2d.append([x, y])
+            # Use z coordinate from MediaPipe (scaled)
+            key_points_3d.append([x, y, landmark.z * w])
         
-        # Calculate head pose (simplified)
-        # This is a basic implementation - can be improved
-        nose_tip = landmarks_2d[1]
-        chin = landmarks_2d[175]
+        key_points_2d = np.array(key_points_2d, dtype=np.float32)
+        key_points_3d = np.array(key_points_3d, dtype=np.float32)
         
-        # Calculate head tilt
-        head_tilt = math.atan2(chin[1] - nose_tip[1], chin[0] - nose_tip[0])
-        head_tilt_degrees = math.degrees(head_tilt)
+        # Camera matrix (simplified)
+        focal_length = w
+        center = (w // 2, h // 2)
+        camera_matrix = np.array([
+            [focal_length, 0, center[0]],
+            [0, focal_length, center[1]],
+            [0, 0, 1]
+        ], dtype=np.float32)
         
-        return {
-            "x_angle": head_tilt_degrees,
-            "y_angle": 0,  # TODO: Implement proper y-axis calculation
-            "z_angle": 0,  # TODO: Implement proper z-axis calculation
-            "confidence": 0.8
-        }
+        # Distortion coefficients (assume no distortion)
+        dist_coeffs = np.zeros((4, 1))
+        
+        # Model points (3D face model in world coordinates)
+        model_points = np.array([
+            (0.0, 0.0, 0.0),           # Nose tip
+            (0.0, -330.0, -65.0),      # Chin
+            (-225.0, 170.0, -135.0),   # Left eye corner
+            (225.0, 170.0, -135.0),    # Right eye corner
+            (-150.0, -150.0, -125.0),  # Left mouth corner
+            (150.0, -150.0, -125.0)    # Right mouth corner
+        ], dtype=np.float32)
+        
+        try:
+            # Solve PnP to get rotation and translation vectors
+            success, rotation_vector, translation_vector = cv2.solvePnP(
+                model_points, key_points_2d, camera_matrix, dist_coeffs
+            )
+            
+            if success:
+                # Convert rotation vector to Euler angles
+                rotation_matrix, _ = cv2.Rodrigues(rotation_vector)
+                
+                # Extract Euler angles (in degrees)
+                x_angle = math.degrees(math.atan2(rotation_matrix[2, 1], rotation_matrix[2, 2]))
+                y_angle = math.degrees(math.atan2(-rotation_matrix[2, 0], 
+                                     math.sqrt(rotation_matrix[2, 1]**2 + rotation_matrix[2, 2]**2)))
+                z_angle = math.degrees(math.atan2(rotation_matrix[1, 0], rotation_matrix[0, 0]))
+                
+                # Calculate confidence based on pose stability
+                confidence = self._calculate_pose_confidence(x_angle, y_angle, z_angle)
+                
+                return {
+                    "x_angle": x_angle,  # Roll (head tilt left/right)
+                    "y_angle": y_angle,  # Pitch (head up/down)
+                    "z_angle": z_angle,  # Yaw (head left/right turn)
+                    "confidence": confidence
+                }
+            
+        except Exception as e:
+            logger.error(f"Head pose calculation error: {e}")
+        
+        return {"x_angle": 0, "y_angle": 0, "z_angle": 0, "confidence": 0}
+    
+    def _calculate_pose_confidence(self, x_angle: float, y_angle: float, z_angle: float) -> float:
+        """Calculate confidence based on head pose angles"""
+        # Confidence decreases as angles increase from forward-facing position
+        max_angle = max(abs(x_angle), abs(y_angle), abs(z_angle))
+        
+        if max_angle < 15:
+            return 0.95
+        elif max_angle < 30:
+            return 0.8
+        elif max_angle < 45:
+            return 0.6
+        elif max_angle < 60:
+            return 0.4
+        else:
+            return 0.2
     
     def detect_phone_usage(self, frame: np.ndarray) -> Dict[str, any]:
         
@@ -230,8 +299,11 @@ def test_attention_detector():
     """Test function for attention detector"""
     detector = AttentionDetector()
     
-    # Initialize webcam
-    cap = cv2.VideoCapture(0)
+    # Initialize webcam with DirectShow backend
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    cap.set(cv2.CAP_PROP_FPS, 15)
     
     if not cap.isOpened():
         print("Error: Could not open webcam")

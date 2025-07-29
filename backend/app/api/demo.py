@@ -6,11 +6,14 @@ Demo API Endpoint
 import logging
 from pathlib import Path
 from typing import Any, Dict
+
 import cv2
 import numpy as np
-from app.ai.demo_engine import StudentDemo
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
+
+from app.ai.demo_engine import StudentDemo
+
 logger = logging.getLogger(__name__)
 demo_engine = None
 def get_demo_engine():
@@ -34,9 +37,9 @@ def get_demo_engine():
                 logger.warning("No models directory found, using fallback")
                 models_path = "/app/models" 
             demo_engine = StudentDemo(models_dir=models_path)
-            logger.info("✅ Demo Engine initialized")
+            logger.info("Demo Engine initialized")
         except Exception as e:
-            logger.error(f"❌ Failed to initialize demo engine: {e}")
+            logger.error(f"Failed to initialize demo engine: {e}")
             demo_engine = FallbackDemoEngine()
     return demo_engine
 class FallbackDemoEngine:
@@ -87,6 +90,25 @@ async def analyze_frame(frame: UploadFile = File(...)):
         return JSONResponse(content=result)
     except Exception as e:
         logger.error(f"Demo analysis error: {e}")
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@router.post("/analyze")
+async def analyze_frame_main(frame: UploadFile = File(...)):
+    """Main analyze endpoint for frontend compatibility"""
+    try:
+        image_data = await frame.read()
+        nparr = np.frombuffer(image_data, np.uint8)
+        cv_frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if cv_frame is None:
+            raise HTTPException(status_code=400, detail="Invalid image format")
+        engine = get_demo_engine()
+        result = await engine.analyze_frame(cv_frame)
+        if 'display_metrics' not in result:
+            raise HTTPException(status_code=500, detail="Analysis failed - no display metrics")
+        return JSONResponse(content=result)
+    except Exception as e:
+        logger.error(f"Main analysis error: {e}")
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 @router.get("/demo/status")
 async def get_demo_status():
@@ -172,11 +194,11 @@ async def demo_health_check():
             "model_version": getattr(engine, 'model_version', 'unknown'),
             "features": features,
             "trained_models": {
-                "emotion_onnx": "✅ TRAINED" if features.get('emotion_detection', False) else "❌ Not loaded",
-                "attention_torch": "⚠️ Available but check training" if "attention_torch" in getattr(engine, 'models', {}) else "❌ Not loaded",
-                "engagement_sklearn": "⏭️ Not trained yet (using fallback)" if not features.get('engagement_scoring', False) else "✅ TRAINED",
-                "gaze_tracking": "✅ Geometric estimation" if features.get('gaze_tracking', False) else "❌ Not available",
-                "posture_analysis": "✅ MediaPipe based" if features.get('posture_analysis', False) else "❌ Not available"
+                "emotion_onnx": "TRAINED" if features.get('emotion_detection', False) else "Not loaded",
+                "attention_torch": "Available but check training" if "attention_torch" in getattr(engine, 'models', {}) else "Not loaded",
+                "engagement_sklearn": "Not trained yet (using fallback)" if not features.get('engagement_scoring', False) else "TRAINED",
+                "gaze_tracking": "Geometric estimation" if features.get('gaze_tracking', False) else "Not available",
+                "posture_analysis": "MediaPipe based" if features.get('posture_analysis', False) else "Not available"
            },
             "configuration": {
                 "update_frequency_hz": getattr(engine, 'update_frequency', 2.0),
