@@ -70,7 +70,7 @@ class ONNXEmotionDetector:
     def load_model(self) -> bool:
         try:
             if not self.model_path or not self.model_path.exists():
-                logger.error(f"ONNX model not found at any expected location")
+                logger.error(f"❌ ONNX model not found at any expected location")
                 return False
             providers = ['CPUExecutionProvider']
             if ort.get_available_providers():
@@ -108,7 +108,7 @@ class ONNXEmotionDetector:
             logger.info(f"🔧 Providers: {providers}")
             return True
         except Exception as e:
-            logger.error(f"Failed to load ONNX model: {e}")
+            logger.error(f"❌ Failed to load ONNX model: {e}")
             self.model_loaded = False
             return False
     def detect_faces(self, frame: np.ndarray) -> List[Tuple[int, int, int, int]]:
