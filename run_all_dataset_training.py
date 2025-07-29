@@ -80,7 +80,7 @@ class DatasetTrainingManager:
                 available_datasets[dataset_name] = self.training_scripts[dataset_name]
                 logger.info(f"✅ {dataset_name}: Available")
             else:
-                logger.warning(f"{dataset_name}: Not found at {path}")
+                logger.warning(f"❌ {dataset_name}: Not found at {path}")
         return available_datasets
     def run_training_script(self, dataset_name, script_info):
         logger.info(f"🚀 Starting {dataset_name} training...")
@@ -88,7 +88,7 @@ class DatasetTrainingManager:
         logger.info(f"🎯 Target Accuracy: {script_info['target_acc']}%")
         self.thermal_manager.log_temperature()
         if not self.thermal_manager.is_safe_to_train():
-            logger.error(f"System temperature unsafe or cannot be read. Skipping {dataset_name} training.")
+            logger.error(f"❌ System temperature unsafe or cannot be read. Skipping {dataset_name} training.")
             self.results[dataset_name] = {
                 'status': 'skipped_thermal',
                 'reason': 'unsafe_temperature_or_unreadable'
@@ -96,7 +96,7 @@ class DatasetTrainingManager:
             return False
         script_path = script_info['script']
         if not Path(script_path).exists():
-            logger.error(f"Training script not found: {script_path}")
+            logger.error(f"❌ Training script not found: {script_path}")
             return False
         try:
             start_time = time.time()
@@ -146,7 +146,7 @@ class DatasetTrainingManager:
                     }
                 return True
             else:
-                logger.error(f"{dataset_name} training failed!")
+                logger.error(f"❌ {dataset_name} training failed!")
                 logger.error(f"STDOUT: {result.stdout}")
                 logger.error(f"STDERR: {result.stderr}")
                 self.results[dataset_name] = {
@@ -156,14 +156,14 @@ class DatasetTrainingManager:
                 }
                 return False
         except subprocess.TimeoutExpired:
-            logger.error(f"{dataset_name} training timed out after 2 hours")
+            logger.error(f"❌ {dataset_name} training timed out after 2 hours")
             self.results[dataset_name] = {
                 'status': 'timeout',
                 'training_duration': 7200
             }
             return False
         except Exception as e:
-            logger.error(f"{dataset_name} training error: {e}")
+            logger.error(f"❌ {dataset_name} training error: {e}")
             self.results[dataset_name] = {
                 'status': 'error',
                 'error': str(e)
@@ -174,7 +174,7 @@ class DatasetTrainingManager:
         self.start_time = time.time()
         available_datasets = self.check_dataset_availability()
         if not available_datasets:
-            logger.error("No datasets available for training!")
+            logger.error("❌ No datasets available for training!")
             return
         logger.info(f"📊 Found {len(available_datasets)} available datasets")
         for dataset_name, script_info in available_datasets.items():
@@ -185,7 +185,7 @@ class DatasetTrainingManager:
             if success:
                 logger.info(f"✅ {dataset_name} training completed")
             else:
-                logger.error(f"{dataset_name} training failed")
+                logger.error(f"❌ {dataset_name} training failed")
             logger.info(f"{'='*60}\n")
         self.generate_training_report()
     def generate_training_report(self):
@@ -255,7 +255,7 @@ class DatasetTrainingManager:
             acc = self.results[dataset].get('best_val_acc', 0)
             logger.info(f"   - {dataset.upper()}: {acc:.2f}%")
         if failed:
-            logger.info(f"Failed trainings: {len(failed)}")
+            logger.info(f"❌ Failed trainings: {len(failed)}")
             for dataset in failed:
                 status = self.results[dataset].get('status', 'unknown')
                 logger.info(f"   - {dataset.upper()}: {status}")

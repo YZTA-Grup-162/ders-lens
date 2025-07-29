@@ -1,0 +1,41 @@
+# Use a more comprehensive base image with scientific computing libraries
+FROM python:3.9
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    python3-pip \
+    python3-setuptools \
+    python3-wheel \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements file
+COPY ai-requirements.txt ./
+
+# Install Python dependencies with specific versions
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r ai-requirements.txt
+
+# Copy application code
+COPY app.py .
+
+# Create model directory structure
+RUN mkdir -p /app/models_fer2013 && \
+    mkdir -p /app/models_daisee && \
+    mkdir -p /app/models_mendeley && \
+    mkdir -p /app/models_comprehensive_fixed && \
+    mkdir -p /app/models_comprehensive_real
+
+# Expose port
+EXPOSE 8001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8001/health || exit 1
+
+# Run the application
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8001"]
