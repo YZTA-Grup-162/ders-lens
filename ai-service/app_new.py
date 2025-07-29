@@ -1,4 +1,6 @@
-
+"""
+Real AI Service for Ders Lens - Uses actual trained models  
+"""
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -47,9 +49,9 @@ class RealAIService:
         try:
             self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
             self.initialized = True
-            print("OpenCV face detection initialized")
+            print("✅ OpenCV face detection initialized")
         except Exception as e:
-            print(f"OpenCV setup error: {e}")
+            print(f"❌ OpenCV setup error: {e}")
     def decode_image(self, base64_string: str) -> np.ndarray:
         try:
             if ',' in base64_string:

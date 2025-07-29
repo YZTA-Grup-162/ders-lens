@@ -34,9 +34,9 @@ def get_enhanced_demo_engine():
                     continue
             if not engine_created:
                 _enhanced_demo_engine = EnhancedDemo()
-                logger.warning("Created enhanced demo engine with default fallback")
+                logger.warning("⚠️ Created enhanced demo engine with default fallback")
         except Exception as e:
-            logger.error(f"Failed to create enhanced demo engine: {e}")
+            logger.error(f"❌ Failed to create enhanced demo engine: {e}")
             raise HTTPException(status_code=500, detail=f"Enhanced demo engine creation failed: {str(e)}")
     return _enhanced_demo_engine
 def reload_enhanced_demo_engine():

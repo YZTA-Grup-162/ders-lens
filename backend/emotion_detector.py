@@ -90,7 +90,7 @@ class AdvancedEmotionDetector:
             else:
                 logger.warning("⚠️ DAISEE model not found, using fallback emotion detection")
         except Exception as e:
-            logger.error(f"Failed to load DAISEE emotion model: {e}")
+            logger.error(f"❌ Failed to load DAISEE emotion model: {e}")
     def setup_facial_analysis(self):
         try:
             try:
@@ -113,7 +113,7 @@ class AdvancedEmotionDetector:
             self.face_cascade = cv2.CascadeClassifier(cascade_path)
             logger.info("✅ Facial analysis setup complete")
         except Exception as e:
-            logger.error(f"Facial analysis setup failed: {e}")
+            logger.error(f"❌ Facial analysis setup failed: {e}")
             self.use_mediapipe = False
     def extract_facial_features_for_emotion(self, frame: np.ndarray, landmarks: np.ndarray) -> np.ndarray:
         try:
@@ -216,7 +216,7 @@ class AdvancedEmotionDetector:
             logger.debug("No landmarks provided, returning zero features")
             return np.zeros(512, dtype=np.float32)
         except Exception as e:
-            logger.error(f"Feature extraction error: {e}")
+            logger.error(f"❌ Feature extraction error: {e}")
             return np.zeros(512, dtype=np.float32)
     def _calculate_eye_aspect_ratio(self, eye_landmarks: np.ndarray) -> float:
         try:
@@ -459,7 +459,7 @@ class AdvancedEmotionDetector:
             return smoothed_state
             
         except Exception as e:
-            logger.error(f"Emotion detection failed: {e}", exc_info=True)
+            logger.error(f"❌ Emotion detection failed: {e}", exc_info=True)
             return EmotionState(
                 engagement=0.5,
                 boredom=0.3,

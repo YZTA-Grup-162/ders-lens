@@ -8,10 +8,8 @@ import time
 from collections import deque
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
-
 import cv2
 import numpy as np
-
 try:
     import mediapipe as mp
     MEDIAPIPE_AVAILABLE = True
@@ -24,7 +22,6 @@ except ImportError:
     ONNX_AVAILABLE = False
 try:
     import pickle
-
     import torch
     TORCH_AVAILABLE = True
 except ImportError:
@@ -263,42 +260,27 @@ class StudentDemo:
             left_eye_center = self._get_eye_center(face_landmarks, 'left')
             right_eye_center = self._get_eye_center(face_landmarks, 'right')
             nose_tip = self._get_nose_tip(face_landmarks)
-            
-            # Calculate eye center more accurately
             eye_center = ((left_eye_center[0] + right_eye_center[0]) / 2,
                          (left_eye_center[1] + right_eye_center[1]) / 2)
-            
-            # Improved gaze calculation with better thresholds
             horizontal_diff = eye_center[0] - nose_tip[0]
             vertical_diff = eye_center[1] - nose_tip[1]
-            
-            # Enhanced direction classification with better thresholds
-            if abs(horizontal_diff) < 0.015 and abs(vertical_diff) < 0.015:
+            if abs(horizontal_diff) < 0.02 and abs(vertical_diff) < 0.02:
                 direction = 'center'
-            elif horizontal_diff > 0.015:
+            elif horizontal_diff > 0.02:
                 direction = 'left'
-            elif horizontal_diff < -0.015:
+            elif horizontal_diff < -0.02:
                 direction = 'right'
-            elif vertical_diff > 0.015:
+            elif vertical_diff > 0.02:
                 direction = 'up'
             else:
                 direction = 'down'
-            
-            # Improved screen coordinate mapping with better scaling
-            # Use adaptive scaling based on face size
-            face_width = abs(left_eye_center[0] - right_eye_center[0])
-            scale_factor = max(3.0, min(7.0, 5.0 / max(face_width, 0.1)))
-            
-            screen_x = 0.5 + horizontal_diff * scale_factor
-            screen_y = 0.5 + vertical_diff * scale_factor
-            
-            # Apply smoothing and bounds
-            screen_x = max(0.1, min(0.9, screen_x))
-            screen_y = max(0.1, min(0.9, screen_y))
-            
+            screen_x = 0.5 + horizontal_diff * 5
+            screen_y = 0.5 + vertical_diff * 5
+            screen_x = max(0, min(1, screen_x))
+            screen_y = max(0, min(1, screen_y))
             return direction, screen_x, screen_y
         except Exception as e:
-            logger.error(f"Enhanced gaze estimation failed: {e}")
+            logger.error(f"Gaze estimation failed: {e}")
             return 'center', 0.5, 0.5
     def _smooth_metrics(self, new_metrics):
         for key, value in new_metrics.items():

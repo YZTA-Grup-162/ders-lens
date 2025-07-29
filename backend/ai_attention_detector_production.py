@@ -7,12 +7,10 @@ import os
 import time
 from pathlib import Path
 from typing import Dict, Optional, Tuple
-
 import cv2
 import numpy as np
 import torch
 import torch.nn as nn
-
 logger = logging.getLogger(__name__)
 class SimpleAttentionModel(nn.Module):
     def __init__(self):
@@ -93,14 +91,14 @@ class AIAttentionDetectorProduction:
                     self.model.load_state_dict(torch.load(model_path, map_location=self.device))
                     self.model.eval()
                     self.model_loaded = True
-                    logger.info(f"Loaded PyTorch model from: {model_path}")
+                    logger.info(f"✅ Loaded PyTorch model from: {model_path}")
                 else:
-                    logger.warning(f"Model format not supported: {model_path}")
+                    logger.warning(f"⚠️ Model format not supported: {model_path}")
             else:
-                logger.warning("No trained model found, using rule-based fallback")
+                logger.warning("⚠️ No trained model found, using rule-based fallback")
                 self.model_loaded = False
         except Exception as e:
-            logger.error(f"Failed to load model: {e}")
+            logger.error(f"❌ Failed to load model: {e}")
             self.model_loaded = False
     def extract_handcrafted_features(self, image: np.ndarray, faces: list) -> np.ndarray:
         height, width = image.shape[:2]

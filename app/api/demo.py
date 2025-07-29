@@ -6,14 +6,11 @@ Demo API Endpoint
 import logging
 from pathlib import Path
 from typing import Any, Dict
-
 import cv2
 import numpy as np
+from app.ai.demo_engine import StudentDemo
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
-
-from app.ai.demo_engine import StudentDemo
-
 logger = logging.getLogger(__name__)
 demo_engine = None
 def get_demo_engine():
@@ -39,7 +36,7 @@ def get_demo_engine():
             demo_engine = StudentDemo(models_dir=models_path)
             logger.info("✅ Demo Engine initialized")
         except Exception as e:
-            logger.error(f"Failed to initialize demo engine: {e}")
+            logger.error(f"❌ Failed to initialize demo engine: {e}")
             demo_engine = FallbackDemoEngine()
     return demo_engine
 class FallbackDemoEngine:
@@ -175,11 +172,11 @@ async def demo_health_check():
             "model_version": getattr(engine, 'model_version', 'unknown'),
             "features": features,
             "trained_models": {
-                "emotion_onnx": "✅ TRAINED" if features.get('emotion_detection', False) else "Not loaded",
-                "attention_torch": "⚠️ Available but check training" if "attention_torch" in getattr(engine, 'models', {}) else "Not loaded",
+                "emotion_onnx": "✅ TRAINED" if features.get('emotion_detection', False) else "❌ Not loaded",
+                "attention_torch": "⚠️ Available but check training" if "attention_torch" in getattr(engine, 'models', {}) else "❌ Not loaded",
                 "engagement_sklearn": "⏭️ Not trained yet (using fallback)" if not features.get('engagement_scoring', False) else "✅ TRAINED",
-                "gaze_tracking": "✅ Geometric estimation" if features.get('gaze_tracking', False) else "Not available",
-                "posture_analysis": "✅ MediaPipe based" if features.get('posture_analysis', False) else "Not available"
+                "gaze_tracking": "✅ Geometric estimation" if features.get('gaze_tracking', False) else "❌ Not available",
+                "posture_analysis": "✅ MediaPipe based" if features.get('posture_analysis', False) else "❌ Not available"
            },
             "configuration": {
                 "update_frequency_hz": getattr(engine, 'update_frequency', 2.0),
