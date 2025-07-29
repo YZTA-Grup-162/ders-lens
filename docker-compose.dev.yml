@@ -1,33 +1,33 @@
-# Development docker-compose for DersLens - faster iteration
+# Development docker-compose for faster iteration
 # version: '3.8'  # Docker Compose v2'de artık gerekli değil
 
 services:
   # Backend API Service (Development)
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
-    container_name: derslens-backend-dev
+    container_name: attention-pulse-backend-dev
     ports:
       - "8001:8000"
     volumes:
-      - ./app:/app/app
+      - ./backend:/app
       - backend_uploads:/app/uploads
     environment:
       - DEBUG=True
-      - DATABASE_URL=sqlite:///./derslens.db
-      - SECRET_KEY=derslens-dev-secret-key
+      - DATABASE_URL=sqlite:///./attention_pulse.db
+      - SECRET_KEY=dev-secret-key
     restart: unless-stopped
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     networks:
-      - derslens-network
+      - attention-pulse-network
 
   # Frontend Service (Development)
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: derslens-frontend-dev
+    container_name: attention-pulse-frontend-dev
     ports:
       - "3001:3000"
     volumes:
@@ -35,16 +35,16 @@ services:
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - VITE_API_URL=http://localhost:8001
+      - REACT_APP_API_URL=http://localhost:8001
     depends_on:
       - backend
     restart: unless-stopped
     networks:
-      - derslens-network
+      - attention-pulse-network
 
 volumes:
   backend_uploads:
 
 networks:
-  derslens-network:
+  attention-pulse-network:
     driver: bridge
