@@ -27,9 +27,9 @@ def rename_model_files():
         try:
             # Create a copy of the file with the new name
             shutil.copy2(current_path, new_path)
-            #print(f"Created copy: {current_path} -> {new_path}")
+            #print(f"✅ Created copy: {current_path} -> {new_path}")
         except Exception as e:
-            print(f"Failed to create copy {new_path}: {e}")
+            print(f"❌ Failed to create copy {new_path}: {e}")
 
 if __name__ == "__main__":
     print("Renaming model files to match expected filenames...")
