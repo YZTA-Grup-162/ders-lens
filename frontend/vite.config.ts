@@ -1,31 +1,25 @@
 import react from '@vitejs/plugin-react'
+import path from 'path'
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  root: '.',
-  publicDir: 'public',
   plugins: [react()],
   resolve: {
     alias: {
-      '@': new URL('./src', import.meta.url).pathname,
+      '@': path.resolve(__dirname, './src'),
     },
   },
   server: {
     port: 3000,
-    host: '0.0.0.0',
-    strictPort: true,
-    watch: {
-      usePolling: true,
-      interval: 100,
-    },
+    host: true,
     proxy: {
       '/api': {
-        target: 'http://backend-dev:8000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/ws': {
-        target: 'ws://backend-dev:8000',
+        target: 'ws://localhost:8000',
         ws: true,
         changeOrigin: true,
       },
@@ -38,7 +32,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          ui: ['@headlessui/react', 'framer-motion'],
+          ui: ['framer-motion', 'lucide-react'],
           charts: ['recharts'],
         },
       },

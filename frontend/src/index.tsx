@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { ThemeProvider } from './contexts/ThemeContext';
+import './lib/i18n';
 import './styles/globals.css';
 
 const root = ReactDOM.createRoot(

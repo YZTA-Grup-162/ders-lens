@@ -1,263 +1,295 @@
 import { motion } from 'framer-motion';
-import {
-    ArrowLeft,
-    BarChart3,
-    TrendingUp,
-    Zap
-} from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AnalysisDashboard from '../components/AnalysisDashboard';
-import LiveCamera from '../components/LiveCamera';
-import { useTheme } from '../contexts/ThemeContext';
-import { AnalysisResult } from '../services/apiService';
-interface StudentData {
-  id: string;
-  name: string;
+import { Camera, Pause, Play, RotateCcw } from 'lucide-react';
+import { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+
+interface AnalysisData {
   attention: number;
   engagement: number;
   emotion: string;
-  gazeDirection: string;
-  isActive: boolean;
+  gaze: { x: number; y: number };
 }
+
 const DemoPage = () => {
-  const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
-  const [analysisData, setAnalysisData] = useState<AnalysisResult | null>(null);
-  const [classData, setClassData] = useState<StudentData[]>([]);
-  const [overallStats, setOverallStats] = useState({
-    averageAttention: 0,
-    averageEngagement: 0,
-    activeStudents: 0,
-    totalStudents: 0
+  const [isRecording, setIsRecording] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [analysisData, setAnalysisData] = useState<AnalysisData>({
+    attention: 0,
+    engagement: 0,
+    emotion: 'neutral',
+    gaze: { x: 0, y: 0 }
   });
-  const triggerTestAnalysis = useCallback(() => {
-    console.log('Test analysis button clicked!');
-    const mockResult: AnalysisResult = {
-      attention: Math.round(Math.random() * 30 + 70),
-      engagement: Math.round(Math.random() * 25 + 75),
-      emotion: ['Odaklı', 'Meraklı', 'Anlıyor', 'Düşünüyor'][Math.floor(Math.random() * 4)],
-      emotionConfidence: Math.round(Math.random() * 15 + 85),
-      gazeDirection: ['Merkez', 'Sol', 'Sağ'][Math.floor(Math.random() * 3)],
-      faceDetected: true,
-      timestamp: Date.now()
-    };
-    console.log('Generated mock result:', mockResult);
-    handleAnalysisResult(mockResult);
-  }, []);
-  useEffect(() => {
-    const mockStudents: StudentData[] = Array.from({ length: 12 }, (_, i) => ({
-      id: `student-${i + 1}`,
-      name: `Öğrenci ${i + 1}`,
-      attention: Math.random() * 40 + 60, 
-      engagement: Math.random() * 30 + 70, 
-      emotion: ['Odaklı', 'Meraklı', 'Anlıyor', 'Düşünüyor', 'Kararsız'][Math.floor(Math.random() * 5)],
-      gazeDirection: ['Merkez', 'Sol', 'Sağ', 'Yukarı'][Math.floor(Math.random() * 4)],
-      isActive: Math.random() > 0.1
-    }));
-    setClassData(mockStudents);
-    const activeStudents = mockStudents.filter(s => s.isActive);
-    const avgAttention = activeStudents.reduce((sum, s) => sum + s.attention, 0) / activeStudents.length;
-    const avgEngagement = activeStudents.reduce((sum, s) => sum + s.engagement, 0) / activeStudents.length;
-    setOverallStats({
-      averageAttention: Math.round(avgAttention),
-      averageEngagement: Math.round(avgEngagement),
-      activeStudents: activeStudents.length,
-      totalStudents: mockStudents.length
-    });
-    setTimeout(() => {
-      console.log('Auto-triggering test analysis on page load...');
-      triggerTestAnalysis();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const startCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 640, height: 480 }
+      });
+      setStream(mediaStream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+      }
+      setIsRecording(true);
+      toast.success('Kamera başlatıldı');
+      
+      startAnalysis();
+    } catch (error) {
+      toast.error('Kamera erişimi reddedildi');
+      console.error('Camera error:', error);
+    }
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+    }
+    setIsRecording(false);
+    toast.success('Kamera durduruldu');
+  };
+
+  const startAnalysis = () => {
+    const interval = setInterval(() => {
+      setAnalysisData({
+        attention: Math.floor(Math.random() * 100),
+        engagement: Math.floor(Math.random() * 100),
+        emotion: ['happy', 'neutral', 'focused', 'confused'][Math.floor(Math.random() * 4)],
+        gaze: {
+          x: Math.random() * 100,
+          y: Math.random() * 100
+        }
+      });
     }, 2000);
-  }, [triggerTestAnalysis]);
-  const handleAnalysisResult = (result: AnalysisResult) => {
-    console.log('Received analysis result in DemoPage:', result);
-    setAnalysisData(result);
+
+    return () => clearInterval(interval);
   };
+
+  const resetDemo = () => {
+    stopCamera();
+    setAnalysisData({
+      attention: 0,
+      engagement: 0,
+      emotion: 'neutral',
+      gaze: { x: 0, y: 0 }
+    });
+  };
+
   const getEmotionColor = (emotion: string) => {
-    const colors: { [key: string]: string } = {
-      'Odaklı': 'text-green-600',
-      'Meraklı': 'text-blue-600',
-      'Anlıyor': 'text-purple-600',
-      'Düşünüyor': 'text-yellow-600',
-      'Kararsız': 'text-orange-600',
-      'Sıkılmış': 'text-red-600'
-    };
-    return colors[emotion] || 'text-gray-600';
+    switch (emotion) {
+      case 'happy': return 'text-green-500';
+      case 'focused': return 'text-blue-500';
+      case 'confused': return 'text-orange-500';
+      default: return 'text-gray-500';
+    }
   };
-  const getAttentionColor = (attention: number) => {
-    if (attention >= 80) return 'text-green-600';
-    if (attention >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+
+  const getEmotionEmoji = (emotion: string) => {
+    switch (emotion) {
+      case 'happy': return '😊';
+      case 'focused': return '🎯';
+      case 'confused': return '😕';
+      default: return '😐';
+    }
   };
+
+  const getEmotionText = (emotion: string) => {
+    switch (emotion) {
+      case 'happy': return 'Mutlu';
+      case 'focused': return 'Odaklanmış';
+      case 'confused': return 'Kafası Karışık';
+      default: return 'Nötr';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {}
-      <header className="px-6 py-4 border-b border-gray-200/20 dark:border-gray-700/20 backdrop-blur-sm">
-        <nav className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => navigate('/')}
-              className="p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-700/30 transition-all duration-300"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div className="flex items-center space-x-4">
-              <img 
-                src="/derslens-logo.png" 
-                alt="DersLens Logo" 
-                className="w-12 h-12 rounded-xl object-contain"
-              />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                DersLens Demo
-              </h1>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={triggerTestAnalysis}
-              className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-semibold shadow-lg"
-            >
-              🧪 Test Analizi Yap
-            </button>
-          </div>
-        </nav>
-      </header>
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {}
-          <div className="lg:col-span-2 space-y-6">
-            {}
-            <LiveCamera onAnalysisResult={handleAnalysisResult} />
-            {}
-            <AnalysisDashboard analysisData={analysisData} />
-          </div>
-          {}
-          <div className="space-y-6">
-            {}
-            <motion.div
-              className="bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-gray-700/20"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sınıf Özeti</h3>
-                <BarChart3 className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-              </div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-300">Ortalama Dikkat</span>
-                  <span className={`font-bold ${getAttentionColor(overallStats.averageAttention)}`}>
-                    {overallStats.averageAttention}%
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-300">Ortalama Katılım</span>
-                  <span className={`font-bold ${getAttentionColor(overallStats.averageEngagement)}`}>
-                    {overallStats.averageEngagement}%
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-300">Aktif Öğrenci</span>
-                  <span className="font-bold text-blue-600">
-                    {overallStats.activeStudents}/{overallStats.totalStudents}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-            {}
-            <motion.div
-              className="bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-gray-700/20 max-h-96 overflow-y-auto"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Öğrenci Listesi</h3>
-              <div className="space-y-3">
-                {classData.slice(0, 8).map((student) => (
-                  <div
-                    key={student.id}
-                    className="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-xl"
+    <div className="min-h-screen pt-20 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8"
+        >
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            DersLens Demo
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300">
+            Yapay zeka destekli öğrenci analizi sistemini test edin
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Camera Section */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-gray-200/20 dark:border-gray-700/20 shadow-lg"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                Kamera Feed
+              </h2>
+              <div className="flex space-x-2">
+                {!isRecording ? (
+                  <button
+                    onClick={startCamera}
+                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                   >
-                    <div className="flex items-center">
-                      <div className={`w-3 h-3 rounded-full mr-3 ${student.isActive ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-                      <span className="font-medium text-gray-900 dark:text-white text-sm">
-                        {student.name}
-                      </span>
-                    </div>
-                    <div className="text-right text-xs">
-                      <div className={`font-semibold ${getAttentionColor(student.attention)}`}>
-                        {Math.round(student.attention)}%
-                      </div>
-                      <div className={`${getEmotionColor(student.emotion)}`}>
-                        {student.emotion}
-                      </div>
-                    </div>
+                    <Play className="h-4 w-4 mr-2" />
+                    Başlat
+                  </button>
+                ) : (
+                  <button
+                    onClick={stopCamera}
+                    className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    <Pause className="h-4 w-4 mr-2" />
+                    Durdur
+                  </button>
+                )}
+                <button
+                  onClick={resetDemo}
+                  className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  <RotateCcw className="h-4 w-4 mr-2" />
+                  Sıfırla
+                </button>
+              </div>
+            </div>
+
+            <div className="relative bg-gray-900 rounded-lg overflow-hidden aspect-video">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-full h-full object-cover"
+              />
+              <canvas
+                ref={canvasRef}
+                className="absolute inset-0 w-full h-full"
+              />
+              {!isRecording && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <Camera className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-300">Kamerayı başlatmak için butonlara tıklayın</p>
                   </div>
-                ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Analysis Results */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="space-y-6"
+          >
+            {/* Attention Meter */}
+            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-gray-200/20 dark:border-gray-700/20 shadow-lg">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Dikkat Seviyesi
+              </h3>
+              <div className="relative">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                  <motion.div
+                    className="bg-gradient-to-r from-green-500 to-blue-500 h-3 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${analysisData.attention}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white mt-2 block">
+                  %{analysisData.attention}
+                </span>
               </div>
-            </motion.div>
-            {}
-            <motion.div
-              className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 backdrop-blur-sm rounded-3xl p-6 border border-blue-200/20 dark:border-blue-700/20"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              <div className="flex items-center mb-4">
-                <Zap className="w-5 h-5 text-blue-600 mr-2" />
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">AI Modelleri</h3>
+            </div>
+
+            {/* Engagement Meter */}
+            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-gray-200/20 dark:border-gray-700/20 shadow-lg">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Katılım Seviyesi
+              </h3>
+              <div className="relative">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                  <motion.div
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${analysisData.engagement}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white mt-2 block">
+                  %{analysisData.engagement}
+                </span>
               </div>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">Duygu Tanıma</span>
-                  <span className="text-green-600 font-semibold">FER2013</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">Dikkat Analizi</span>
-                  <span className="text-green-600 font-semibold">DAiSEE</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">Katılım Modeli</span>
-                  <span className="text-green-600 font-semibold">Mendeley</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">ONNX Runtime</span>
-                  <span className="text-green-600 font-semibold">Aktif</span>
-                </div>
-              </div>
-            </motion.div>
-            {}
-            <motion.div
-              className="bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-gray-700/20"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-            >
-              <div className="flex items-center mb-4">
-                <TrendingUp className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-2" />
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Performans</h3>
-              </div>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">Analiz Hızı</span>
-                  <span className="text-green-600 font-semibold">&lt;100ms</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">Doğruluk Oranı</span>
-                  <span className="text-green-600 font-semibold">95%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">CPU Kullanımı</span>
-                  <span className="text-yellow-600 font-semibold">Orta</span>
+            </div>
+
+            {/* Emotion Detection */}
+            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-gray-200/20 dark:border-gray-700/20 shadow-lg">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Duygu Durumu
+              </h3>
+              <div className="flex items-center space-x-4">
+                <span className="text-4xl">
+                  {getEmotionEmoji(analysisData.emotion)}
+                </span>
+                <div>
+                  <span className={`text-2xl font-bold ${getEmotionColor(analysisData.emotion)}`}>
+                    {getEmotionText(analysisData.emotion)}
+                  </span>
                 </div>
               </div>
-            </motion.div>
-          </div>
+            </div>
+
+            {/* Gaze Tracking */}
+            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-gray-200/20 dark:border-gray-700/20 shadow-lg">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Bakış Haritası
+              </h3>
+              <div className="relative bg-gray-100 dark:bg-gray-800 rounded-lg h-32">
+                <motion.div
+                  className="absolute w-3 h-3 bg-red-500 rounded-full"
+                  animate={{
+                    left: `${analysisData.gaze.x}%`,
+                    top: `${analysisData.gaze.y}%`
+                  }}
+                  transition={{ duration: 0.5 }}
+                />
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Kırmızı nokta: Mevcut bakış odağı
+              </p>
+            </div>
+          </motion.div>
         </div>
+
+        {/* Instructions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border border-blue-200/20 dark:border-blue-700/20"
+        >
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-2">
+            Demo Talimatları
+          </h3>
+          <ul className="text-blue-800 dark:text-blue-200 space-y-1">
+            <li>• Kamerayı başlatmak için "Başlat" butonuna tıklayın</li>
+            <li>• Sistem otomatik olarak yüzünüzü tespit edecek ve analiz edecek</li>
+            <li>• Veriler 2 saniyede bir güncellenir</li>
+            <li>• Farklı yüz ifadeleri deneyerek duygu tanımayı test edin</li>
+            <li>• Bakış yönünüzü değiştirerek bakış takibi özelliğini görün</li>
+          </ul>
+        </motion.div>
       </div>
     </div>
   );
 };
+
 export default DemoPage;

@@ -1,31 +1,303 @@
 {
-  "welcome": "Welcome to DersLens",
-  "features": "Features",
-  "demo": "Demo",
-  "technology": "Technology",
-  "contact": "Contact",
-  "about": "About",
-  "startDemo": "Start Demo",
-  "learnMore": "Learn More",
-  "aiPowered": "AI-Powered Education Analytics",
-  "realTimeAnalysis": "Real-time student attention, emotional state, gaze direction and engagement analysis",
-  "attention": "Attention",
-  "emotion": "Emotion",
-  "engagement": "Engagement",
-  "gaze": "Gaze Tracking",
-  "accuracyRate": "Accuracy Rate",
-  "analysisTime": "Analysis Time",
-  "uptime": "Uptime",
-  "activeUsers": "Active Users",
-  "attentionAnalysis": "Attention Analysis",
-  "emotionRecognition": "Emotion Recognition",
-  "privacyProtection": "Privacy Protection",
-  "realTimeProcessing": "Real-time Processing",
-  "dataVisualization": "Data Visualization",
-  "exportReports": "Export Reports",
-  "loading": "Loading...",
-  "error": "Error",
-  "success": "Success",
-  "warning": "Warning",
-  "info": "Information"
+  "nav": {
+    "dashboard": "Dashboard",
+    "liveClass": "Live Class",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "refresh": "Refresh",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "all": "All",
+    "none": "None"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password",
+    "rememberMe": "Remember Me",
+    "loginSuccess": "Login successful",
+    "loginError": "Login error occurred",
+    "invalidCredentials": "Invalid credentials"
+  },
+  "teacher": {
+    "dashboard": {
+      "title": "Teacher Dashboard",
+      "liveSession": "Live Session",
+      "classOverview": "Class Overview",
+      "studentCount": "Student Count",
+      "sessionDuration": "Session Duration",
+      "averageAttention": "Average Attention"
+    },
+    "attention": {
+      "title": "Attention Level",
+      "current": "Current Average",
+      "trend": "Trend",
+      "alerts": "Alerts",
+      "timeline": "Attention Timeline",
+      "distribution": "Attention Distribution",
+      "individual": "Individual Attention",
+      "veryHigh": "Very High",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "veryLow": "Very Low"
+    },
+    "participation": {
+      "title": "Participation Metrics",
+      "cameraOn": "Camera On",
+      "micActive": "Mic Active",
+      "speaking": "Speaking Time",
+      "chatActive": "Chat Activity",
+      "handRaises": "Hand Raises",
+      "engagementLevel": "Engagement Level",
+      "activeStudents": "Active Students",
+      "totalInteractions": "Total Interactions"
+    },
+    "emotions": {
+      "title": "Emotion Analysis",
+      "dominant": "Dominant Emotion",
+      "distribution": "Emotion Distribution",
+      "trend": "Emotion Trend",
+      "happy": "Happy",
+      "neutral": "Neutral",
+      "focused": "Focused",
+      "confused": "Confused",
+      "frustrated": "Frustrated",
+      "surprised": "Surprised",
+      "sad": "Sad",
+      "improving": "Improving",
+      "declining": "Declining",
+      "stable": "Stable"
+    },
+    "suggestions": {
+      "title": "AI Suggestions",
+      "subtitle": "Recommendations to increase class engagement",
+      "breakoutRooms": "Suggest breakout rooms",
+      "quickPoll": "Start quick poll",
+      "energizer": "Energizer activity",
+      "breakTime": "Break time",
+      "interactiveContent": "Interactive content",
+      "checkUnderstanding": "Check understanding",
+      "confidence": "Confidence",
+      "timeToImplement": "Time to Implement",
+      "expectedImpact": "Expected Impact",
+      "implement": "Implement",
+      "dismiss": "Dismiss"
+    },
+    "alerts": {
+      "title": "Alerts",
+      "lowAttention": "Low Attention",
+      "lowParticipation": "Low Participation",
+      "technicalIssue": "Technical Issue",
+      "studentLeft": "Student Left",
+      "attentionDrop": "{{studentName}} attention level dropped",
+      "noParticipation": "{{studentName}} not participating",
+      "cameraOff": "{{studentName}} turned camera off",
+      "connectionIssue": "{{studentName}} experiencing connection issues",
+      "acknowledge": "Acknowledge",
+      "viewDetails": "View Details",
+      "sendMessage": "Send Message"
+    }
+  },
+  "student": {
+    "dashboard": {
+      "title": "Student Dashboard",
+      "joinClass": "Join Class",
+      "currentClass": "Current Class",
+      "upcomingClasses": "Upcoming Classes",
+      "recentActivity": "Recent Activity"
+    },
+    "feedback": {
+      "title": "Personal Feedback",
+      "subtitle": "Your performance during the class",
+      "attention": "Your Attention Score",
+      "participation": "Your Participation Score",
+      "engagement": "Your Engagement Level",
+      "improvement": "Improvement Suggestions",
+      "privacy": "Data kept anonymous",
+      "personalData": "Your personal data is safe",
+      "liveScore": "Live Score",
+      "sessionAverage": "Session Average",
+      "weeklyTrend": "Weekly Trend",
+      "tips": "Tips"
+    },
+    "badges": {
+      "title": "Badges",
+      "earned": "Earned",
+      "inProgress": "In Progress",
+      "available": "Available",
+      "activeParticipant": "Active Participant",
+      "focused": "Focused",
+      "helpful": "Helpful",
+      "engaged": "Engaged",
+      "consistent": "Consistent",
+      "earnedOn": "Earned on:",
+      "progress": "Progress",
+      "requirements": "Requirements"
+    },
+    "controls": {
+      "camera": "Camera",
+      "microphone": "Microphone",
+      "chat": "Chat",
+      "handRaise": "Raise Hand",
+      "screenShare": "Screen Share",
+      "settings": "Settings",
+      "leave": "Leave Class"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "systemHealth": "System Health",
+      "activeUsers": "Active Users",
+      "activeSessions": "Active Sessions",
+      "systemLoad": "System Load"
+    },
+    "users": {
+      "title": "User Management",
+      "teachers": "Teachers",
+      "students": "Students",
+      "admins": "Admins",
+      "addUser": "Add User",
+      "editUser": "Edit User",
+      "deleteUser": "Delete User",
+      "userDetails": "User Details",
+      "lastLogin": "Last Login",
+      "status": "Status",
+      "role": "Role"
+    },
+    "settings": {
+      "title": "System Settings",
+      "general": "General",
+      "security": "Security",
+      "notifications": "Notifications",
+      "integrations": "Integrations",
+      "demo": "Demo Settings",
+      "language": "Language",
+      "theme": "Theme",
+      "timezone": "Timezone"
+    }
+  },
+  "demo": {
+    "title": "DersLens Demo",
+    "subtitle": "Live classroom analytics experience",
+    "joinButton": "Join Demo Class",
+    "viewTeacher": "View Teacher Dashboard",
+    "scenario": "Demo Scenario",
+    "replay": "Replay",
+    "speed": "Speed",
+    "timeline": "Timeline",
+    "events": "Events",
+    "student": {
+      "welcome": "Welcome to the demo class!",
+      "instructions": "During this demo, you will experience a real student journey.",
+      "duration": "Demo duration: 15 minutes",
+      "features": "You will experience attention tracking, participation measurement, and personal feedback.",
+      "privacy": "This is a demo session, no real data is recorded."
+    },
+    "teacher": {
+      "welcome": "Welcome to the teacher dashboard!",
+      "overview": "This panel provides real-time classroom analytics.",
+      "features": "You can view attention tracking, participation metrics, emotion analysis, and AI suggestions.",
+      "controls": "Use demo controls to test different scenarios."
+    },
+    "controls": {
+      "play": "Play",
+      "pause": "Pause",
+      "reset": "Reset",
+      "jumpTo": "Jump To",
+      "hotkeys": "Hotkeys",
+      "toggleData": "Toggle Data View",
+      "triggerEvent": "Trigger Event"
+    },
+    "scenarios": {
+      "standard": "Standard Class",
+      "interactive": "Interactive Class",
+      "challenging": "Challenging Class",
+      "groupWork": "Group Work",
+      "presentation": "Presentation"
+    },
+    "juror": {
+      "evaluation": "Jury Evaluation",
+      "completed": "Demo completed!",
+      "feedback": "We welcome your feedback",
+      "nextSteps": "Next steps",
+      "teacherView": "Explore teacher view",
+      "documentation": "Review documentation"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "accessibility": "Accessibility",
+    "language": {
+      "title": "Language",
+      "turkish": "Türkçe",
+      "english": "English",
+      "autoDetect": "Auto Detect"
+    },
+    "theme": {
+      "title": "Theme",
+      "dark": "Dark",
+      "light": "Light",
+      "auto": "System"
+    },
+    "accessibilityOptions": {
+      "title": "Accessibility Options",
+      "reducedMotion": "Reduced Motion",
+      "highContrast": "High Contrast",
+      "fontSize": "Font Size",
+      "screenReader": "Screen Reader Support"
+    },
+    "notificationSettings": {
+      "sound": "Sound Notifications",
+      "visual": "Visual Notifications",
+      "attention": "Attention Alerts",
+      "participation": "Participation Notifications",
+      "sentiment": "Sentiment Changes"
+    }
+  },
+  "errors": {
+    "404": "Page not found",
+    "500": "Server error",
+    "networkError": "Network connection error",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access denied",
+    "sessionExpired": "Session expired",
+    "tryAgain": "Try again",
+    "contactSupport": "Contact support",
+    "goHome": "Go to homepage"
+  },
+  "tooltips": {
+    "attention": "Student focus level on the class",
+    "participation": "Active participation indicator",
+    "emotion": "Overall class mood",
+    "alert": "Situation requiring attention",
+    "suggestion": "AI-powered improvement suggestion",
+    "badge": "Achievement badge",
+    "demo": "Demo mode active",
+    "live": "Live data stream"
+  }
 }
