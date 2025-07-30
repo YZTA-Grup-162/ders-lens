@@ -19,8 +19,7 @@ export function CameraTestCallToAction({ onStartCamera, className = '' }: CallTo
         }}
         transition={{ 
           duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut"
+          repeat: Infinity
         }}
         className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6"
       >
@@ -107,8 +106,7 @@ export function CameraTestCallToAction({ onStartCamera, className = '' }: CallTo
           }}
           transition={{
             duration: 4,
-            repeat: Infinity,
-            ease: "linear"
+            repeat: Infinity
           }}
           className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-20 blur-sm"
         />

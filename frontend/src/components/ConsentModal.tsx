@@ -30,7 +30,7 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
         </div>
         <div className="mb-6">
           <p className="text-gray-700 mb-4">
-            AttentionPulse requires access to your camera to analyze your attention and engagement levels 
+            DersLens requires access to your camera to analyze your attention and engagement levels 
             during the learning session.
           </p>
           <div className="bg-blue-50 p-4 rounded-lg mb-4">

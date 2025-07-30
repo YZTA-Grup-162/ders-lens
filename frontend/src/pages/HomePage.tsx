@@ -63,11 +63,11 @@ const HomePage = () => {
           >
             <img 
               src="/derslens-logo.png" 
-              alt="Ders Lens Logo" 
-              className="w-10 h-10 rounded-xl"
+              alt="DersLens Logo" 
+              className="w-12 h-12 rounded-xl object-contain"
             />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Ders Lens
+              DersLens
             </h1>
           </motion.div>
           <motion.div 
@@ -313,13 +313,13 @@ const HomePage = () => {
       <footer className="px-6 py-12 bg-gray-900 dark:bg-black">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row justify-between items-center">
-            <div className="flex items-center space-x-3 mb-6 lg:mb-0">
+            <div className="flex items-center space-x-4 mb-6 lg:mb-0">
               <img 
                 src="/derslens-logo.png" 
-                alt="Ders Lens Logo" 
-                className="w-10 h-10 rounded-xl"
+                alt="DersLens Logo" 
+                className="w-12 h-12 rounded-xl object-contain"
               />
-              <h1 className="text-2xl font-bold text-white">Ders Lens</h1>
+              <h1 className="text-2xl font-bold text-white">DersLens</h1>
             </div>
             <div className="flex space-x-8 text-gray-400">
               <a href="#" className="hover:text-white transition-colors">Gizlilik Politikası</a>

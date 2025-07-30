@@ -6,7 +6,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: attention-pulse-backend
+    container_name: ders-lens-backend
     ports:
       - "8000:8000"
     volumes:
@@ -15,34 +15,34 @@ services:
       - backend_models:/app/models
     environment:
       - DEBUG=True
-      - DATABASE_URL=postgresql://postgres:password@db:5432/attention_pulse
+      - DATABASE_URL=postgresql://postgres:password@db:5432/ders_lens
       - SECRET_KEY=PRODUCTION_SECRET_KEY
     depends_on:
       - db
     restart: unless-stopped
     networks:
-      - attention-pulse-network
+      - ders-lens-network
 
   # Frontend Service
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: attention-pulse-frontend
+    container_name: ders-lens-frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
     restart: unless-stopped
     networks:
-      - attention-pulse-network
+      - ders-lens-network
 
   # Database Service
   db:
     image: postgres:15-alpine
-    container_name: attention-pulse-db
+    container_name: ders-lens-db
     environment:
-      - POSTGRES_DB=attention_pulse
+      - POSTGRES_DB=ders_lens
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     volumes:
@@ -51,19 +51,19 @@ services:
       - "5432:5432"
     restart: unless-stopped
     networks:
-      - attention-pulse-network
+      - ders-lens-network
 
   # Redis for caching (optional)
   redis:
     image: redis:7-alpine
-    container_name: attention-pulse-redis
+    container_name: ders-lens-redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     restart: unless-stopped
     networks:
-      - attention-pulse-network
+      - ders-lens-network
 
 volumes:
   postgres_data:
@@ -72,5 +72,5 @@ volumes:
   backend_models:
 
 networks:
-  attention-pulse-network:
+  ders-lens-network:
     driver: bridge

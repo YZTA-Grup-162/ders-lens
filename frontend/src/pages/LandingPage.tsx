@@ -21,8 +21,7 @@ const LandingPage: React.FC = () => {
   const heroY = useTransform(scrollY, [0, 300], [0, -50]);
   const heroOpacity = useTransform(scrollY, [0, 300], [1, 0.8]);
   const fadeInUpTransition = {
-    duration: 0.6,
-    ease: "easeOut"
+    duration: 0.6
   };
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -51,7 +50,7 @@ const LandingPage: React.FC = () => {
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
+      transition: { duration: 0.6 }
     }
   };
   const floatingVariants = {
@@ -59,8 +58,7 @@ const LandingPage: React.FC = () => {
       y: [0, -10, 0],
       transition: {
         duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut"
+        repeat: Infinity
       }
     }
   };
@@ -138,14 +136,14 @@ const LandingPage: React.FC = () => {
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <img 
                 src="/derslens-logo.png" 
                 alt="Ders Lens Logo" 
-                className="h-10 w-10 object-contain"
+                className="h-12 w-12 object-contain"
               />
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Ders Lens
+                DersLens
               </span>
             </div>
             <nav className="hidden md:flex space-x-8">
@@ -443,13 +441,13 @@ const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-3 mb-4">
+              <div className="flex items-center space-x-4 mb-4">
                 <img 
                   src="/derslens-logo.png" 
                   alt="Ders Lens Logo" 
-                  className="h-8 w-8 object-contain"
+                  className="h-10 w-10 object-contain"
                 />
-                <span className="text-xl font-bold">Ders Lens</span>
+                <span className="text-xl font-bold">DersLens</span>
               </div>
               <p className="text-gray-400">
                 AI destekli eğitim analizi platformu

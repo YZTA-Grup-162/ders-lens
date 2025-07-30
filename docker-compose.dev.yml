@@ -7,7 +7,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: attention-pulse-backend-dev
+    container_name: ders-lens-backend-dev
     ports:
       - "8001:8000"
     volumes:
@@ -15,19 +15,19 @@ services:
       - backend_uploads:/app/uploads
     environment:
       - DEBUG=True
-      - DATABASE_URL=sqlite:///./attention_pulse.db
+      - DATABASE_URL=sqlite:///./ders_lens_dev.db
       - SECRET_KEY=dev-secret-key
     restart: unless-stopped
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     networks:
-      - attention-pulse-network
+      - ders-lens-network
 
   # Frontend Service (Development)
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: attention-pulse-frontend-dev
+    container_name: ders-lens-frontend-dev
     ports:
       - "3001:3000"
     volumes:
@@ -40,11 +40,11 @@ services:
       - backend
     restart: unless-stopped
     networks:
-      - attention-pulse-network
+      - ders-lens-network
 
 volumes:
   backend_uploads:
 
 networks:
-  attention-pulse-network:
+  ders-lens-network:
     driver: bridge

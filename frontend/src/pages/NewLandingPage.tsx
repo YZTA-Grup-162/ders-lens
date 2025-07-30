@@ -1,18 +1,18 @@
 import {
-    ArrowRightIcon,
-    BeakerIcon,
-    BoltIcon,
-    CameraIcon,
-    ChartBarIcon,
-    CheckCircleIcon,
-    ClockIcon,
-    CpuChipIcon,
-    EyeIcon,
-    FaceSmileIcon,
-    PlayIcon,
-    ShieldCheckIcon,
-    SparklesIcon,
-    UserGroupIcon
+  ArrowRightIcon,
+  BeakerIcon,
+  BoltIcon,
+  CameraIcon,
+  ChartBarIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  CpuChipIcon,
+  EyeIcon,
+  FaceSmileIcon,
+  PlayIcon,
+  ShieldCheckIcon,
+  SparklesIcon,
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
@@ -40,7 +40,7 @@ const NewLandingPage: React.FC = () => {
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
+      transition: { duration: 0.6 }
     }
   };
   const floatingVariants = {
@@ -48,8 +48,7 @@ const NewLandingPage: React.FC = () => {
       y: [0, -10, 0],
       transition: {
         duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut"
+        repeat: Infinity
       }
     }
   };
@@ -134,22 +133,22 @@ const NewLandingPage: React.FC = () => {
           <div className="flex justify-between items-center h-16">
             {}
             <motion.div 
-              className="flex items-center space-x-3"
+              className="flex items-center space-x-4"
               whileHover={{ scale: 1.05 }}
             >
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                 <img 
                   src="/derslens-logo.png" 
-                  alt="Ders Lens" 
-                  className="w-8 h-8 object-contain"
+                  alt="DersLens" 
+                  className="w-10 h-10 object-contain"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
-                    (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="text-white font-bold text-lg">DL</div>';
+                    (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="text-white font-bold text-xl">DL</div>';
                   }}
                 />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                Ders Lens
+              <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                DersLens
               </span>
             </motion.div>
             {}
@@ -412,8 +411,7 @@ const NewLandingPage: React.FC = () => {
                 }}
                 transition={{
                   duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut"
+                  repeat: Infinity
                 }}
               />
               <motion.div
@@ -424,8 +422,7 @@ const NewLandingPage: React.FC = () => {
                 }}
                 transition={{
                   duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
+                  repeat: Infinity
                 }}
               />
             </motion.div>
@@ -633,8 +630,7 @@ const NewLandingPage: React.FC = () => {
             }}
             transition={{
               duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut"
+              repeat: Infinity
             }}
           />
           <motion.div
@@ -645,8 +641,7 @@ const NewLandingPage: React.FC = () => {
             }}
             transition={{
               duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut"
+              repeat: Infinity
             }}
           />
         </div>

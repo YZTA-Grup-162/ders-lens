@@ -172,17 +172,17 @@ const ModernTeacherDashboard: React.FC = () => {
       {}
       <nav className="fixed left-0 top-0 h-full w-64 bg-white/90 backdrop-blur-lg border-r border-slate-200 z-40">
         <div className="p-6">
-          <div className="flex items-center space-x-3 mb-8">
+          <div className="flex items-center space-x-4 mb-8">
             <img 
               src="/derslens-logo.png" 
-              alt="Ders Lens Logo" 
-              className="h-8 w-auto"
+              alt="DersLens Logo" 
+              className="h-10 w-auto object-contain"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = 'none';
               }}
             />
             <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Ders Lens
+              DersLens
             </span>
           </div>
           <div className="space-y-2">

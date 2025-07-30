@@ -5,6 +5,7 @@ import logging
 import math
 import os
 from typing import Dict, List, Optional
+
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -14,6 +15,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from pydantic import BaseModel
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 app = FastAPI(title="Ders Lens AI Service", version="1.0.0")
@@ -75,7 +77,7 @@ def load_models():
             ORT_AVAILABLE = False
             logger.warning("onnxruntime not available. ONNX models will not be loaded.")
 
-        fer_model_path = "/app/models_fer2013/fer2013_model.onnx"
+        fer_model_path = "../models_fer2013/fer2013_model.onnx"
         logger.info(f"Attempting to load FER2013 model from: {fer_model_path}")
         
         if not os.path.exists(fer_model_path):
@@ -121,7 +123,7 @@ def load_models():
             else:
                 logger.warning(f"PyTorch model not found at {pt_model_path}")
 
-        daisee_model_path = "/app/models_daisee/daisee_model.pth"
+        daisee_model_path = "../models_daisee/daisee_model.pth"
         if os.path.exists(daisee_model_path):
             try:
                 models['daisee'] = torch.load(daisee_model_path, map_location='cpu')
@@ -131,7 +133,7 @@ def load_models():
         else:
             logger.warning(f"DAISEE model not found at {daisee_model_path}")
 
-        mendeley_model_path = "/app/models_mendeley/mendeley_model.pth"
+        mendeley_model_path = "../models_mendeley/mendeley_model.pth"
         if os.path.exists(mendeley_model_path):
             try:
                 models['mendeley'] = torch.load(mendeley_model_path, map_location='cpu')
@@ -470,6 +472,7 @@ async def analyze_frame(request: AnalysisRequest):
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 if __name__ == "__main__":
     import time
+
     import uvicorn
     uvicorn.run(
         "real_ai_service:app",

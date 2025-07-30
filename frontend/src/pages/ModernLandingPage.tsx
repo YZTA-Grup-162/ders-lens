@@ -1,3 +1,4 @@
+
 import { motion, useAnimation } from 'framer-motion';
 import {
     ArrowRight,
@@ -62,17 +63,17 @@ const ModernLandingPage: React.FC = () => {
       } backdrop-blur-lg border-b z-50`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <img 
                 src="/derslens-logo.png" 
-                alt="Ders Lens Logo" 
-                className="h-10 w-auto"
+                alt="DersLens Logo" 
+                className="h-12 w-auto object-contain"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
               />
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Ders Lens
+                DersLens
               </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
@@ -534,16 +535,16 @@ const ModernLandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <div className="flex items-center space-x-3 mb-6">
+              <div className="flex items-center space-x-4 mb-6">
                 <img 
                   src="/derslens-logo.png" 
-                  alt="Ders Lens Logo" 
-                  className="h-8 w-auto"
+                  alt="DersLens Logo" 
+                  className="h-10 w-auto object-contain"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
                 />
-                <span className="text-2xl font-bold">Ders Lens</span>
+                <span className="text-2xl font-bold">DersLens</span>
               </div>
               <p className="text-slate-400 mb-6 max-w-md">
                 AI destekli öğrenci analizi ile eğitim deneyimini yeni boyutlara taşıyan 

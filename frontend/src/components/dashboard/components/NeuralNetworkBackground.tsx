@@ -135,8 +135,7 @@ export function NeuralNetworkBackground() {
             transition={{
               duration: 5 + Math.random() * 3,
               delay: Math.random() * 2,
-              repeat: Infinity,
-              ease: "easeInOut"
+              repeat: Infinity
             }}
           />
         ))}

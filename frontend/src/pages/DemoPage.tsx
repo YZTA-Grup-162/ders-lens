@@ -102,14 +102,14 @@ const DemoPage = () => {
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <img 
                 src="/derslens-logo.png" 
-                alt="Ders Lens Logo" 
-                className="w-10 h-10 rounded-xl"
+                alt="DersLens Logo" 
+                className="w-12 h-12 rounded-xl object-contain"
               />
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Ders Lens Demo
+                DersLens Demo
               </h1>
             </div>
           </div>

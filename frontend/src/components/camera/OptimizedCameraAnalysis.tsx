@@ -277,7 +277,7 @@ export function OptimizedCameraAnalysis({
         <div className="flex items-center justify-center mb-4">
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 20, repeat: Infinity }}
             className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-4"
           >
             <Camera className="w-8 h-8 text-white" />

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-const cn = (...classes: (string | undefined | null | boolean)[]) => {
+const cn = (...classes: (string | undefined | null | boolean | number)[]) => {
   return classes.filter(Boolean).join(' ');
 };
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -103,7 +103,7 @@ export const Progress: React.FC<ProgressProps> = ({
           style={{ width: `${percentage}%` }}
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8 }}
         />
       </div>
     </div>
@@ -279,7 +279,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
     <motion.div
       className={cn("inline-block", className)}
       animate={{ rotate: 360 }}
-      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+      transition={{ duration: 1, repeat: Infinity }}
     >
       <svg
         className={cn("animate-spin", sizeClasses[size], colorClasses[color])}
