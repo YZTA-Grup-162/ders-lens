@@ -1,2 +1,0 @@
-# Windows-specific dependencies
-wmi==1.5.1
