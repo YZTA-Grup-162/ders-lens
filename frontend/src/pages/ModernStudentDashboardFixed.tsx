@@ -1,23 +1,23 @@
 import { motion } from 'framer-motion';
 import {
-    Activity,
-    BarChart3,
-    Bell,
-    Brain,
-    Calendar,
-    Camera,
-    Clock,
-    Eye,
-    Heart,
-    Home,
-    LogOut,
-    Settings,
-    Target,
-    TrendingDown,
-    TrendingUp,
-    User
+  Activity,
+  BarChart3,
+  Bell,
+  Brain,
+  Calendar,
+  Camera,
+  Clock,
+  Eye,
+  Heart,
+  Home,
+  LogOut,
+  Settings,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  User
 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 const ModernStudentDashboard: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isSessionActive, setIsSessionActive] = useState(true);
@@ -39,9 +39,15 @@ const ModernStudentDashboard: React.FC = () => {
   });
   const [analysisHistory, setAnalysisHistory] = useState<any[]>([]);
   const [processingStage, setProcessingStage] = useState('');
+  const stageRef = useRef<NodeJS.Timeout>();
+  const metricsRef = useRef<NodeJS.Timeout>();
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      clearInterval(stageRef.current);
+      clearInterval(metricsRef.current);
+    };
   }, []);
   const runAIAnalysis = () => {
     const stages = [
@@ -55,16 +61,16 @@ const ModernStudentDashboard: React.FC = () => {
     ];
     let stageIndex = 0;
     setProcessingStage(stages[0]);
-    const stageInterval = setInterval(() => {
+    stageRef.current = setInterval(() => {
       stageIndex++;
       if (stageIndex < stages.length) {
         setProcessingStage(stages[stageIndex]);
       } else {
-        clearInterval(stageInterval);
+        clearInterval(stageRef.current);
         setProcessingStage('AI modelleri çalışıyor...');
       }
     }, 2000); 
-    const metricsInterval = setInterval(() => {
+    metricsRef.current = setInterval(() => {
       setAiMetrics(prev => {
         const attentionTrend = Math.sin(Date.now() / 30000) * 5; 
         const engagementTrend = Math.cos(Date.now() / 25000) * 3;
@@ -98,31 +104,26 @@ const ModernStudentDashboard: React.FC = () => {
           distraction: newAttention > 90 ? 'Çok Düşük' : newAttention > 85 ? 'Düşük' : newAttention > 80 ? 'Orta' : 'Yüksek'
         };
       });
-    }, 15000); 
+    }, 2000);  // every 2s
     return () => {
-      clearInterval(stageInterval);
-      clearInterval(metricsInterval);
+      clearInterval(stageRef.current);
+      clearInterval(metricsRef.current);
     };
   };
   const toggleCamera = async () => {
     if (!isCameraActive) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { width: 640, height: 480 },
-          audio: true 
-        });
-        setCameraStream(stream);
-        setIsCameraActive(true);
-        setIsAnalyzing(true);
-        const cleanup = runAIAnalysis();
-        setTimeout(() => {
-          cleanup();
-          setIsAnalyzing(false);
-        }, 60000);
-      } catch (error) {
-        console.error('Kamera erişim hatası:', error);
-        alert('Kamera erişimi başarısız. Lütfen kamera izinlerini kontrol edin.');
-      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 320, height: 240 },  // lower resolution
+        audio: false
+      });
+      setCameraStream(stream);
+      setIsCameraActive(true);
+      setIsAnalyzing(true);
+      const cleanup = runAIAnalysis();
+      setTimeout(() => {
+        cleanup();
+        setIsAnalyzing(false);
+      }, 60000);
     } else {
       if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());

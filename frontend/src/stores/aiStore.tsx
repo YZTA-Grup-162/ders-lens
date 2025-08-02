@@ -88,6 +88,14 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
   const startAnalysis = async () => {
     try {
       dispatch({ type: 'START_ANALYSIS' });
+      // Fetch initial gaze detection status from backend
+      const statusRes = await fetch('/api/gaze/status');
+      if (statusRes.ok) {
+        const statusData = await statusRes.json();
+        dispatch({ type: 'UPDATE_METRICS', payload: statusData });
+      } else {
+        dispatch({ type: 'ADD_ERROR', payload: 'Gaze status request failed' });
+      }
       await initializeCamera();
       connectWebSocket();
     } catch (error) {

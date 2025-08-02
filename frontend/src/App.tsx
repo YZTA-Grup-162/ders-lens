@@ -3,9 +3,9 @@ import { Toaster } from 'react-hot-toast';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Footer from './components/layout/Footer';
 import Header from './components/layout/Header';
-import DemoPage from './pages/DemoPage';
-import HomePage from './pages/HomePage';
 import TeacherDashboard from './pages/TeacherDashboard';
+import EnhancedTurkishDemo from './pages/EnhancedTurkishDemo';
+import TurkishLandingPage from './pages/TurkishLandingPage';
 
 function App() {
   return (
@@ -19,8 +19,8 @@ function App() {
           className="relative"
         >
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/demo" element={<DemoPage />} />
+            <Route path="/" element={<TurkishLandingPage />} />
+            <Route path="/demo" element={<EnhancedTurkishDemo />} />
             <Route path="/dashboard" element={<TeacherDashboard />} />
           </Routes>
         </motion.main>

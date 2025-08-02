@@ -1,39 +1,52 @@
 import { motion } from 'framer-motion';
 import {
-  Camera,
-  CameraOff,
-  CheckCircle,
-  Loader2,
-  Video,
-  VideoOff,
-  XCircle
+    Camera,
+    CameraOff,
+    CheckCircle,
+    Loader2,
+    Video,
+    VideoOff,
+    XCircle
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 interface CameraAnalysisResult {
   emotion: {
-    model: string;
-    emotions: Record<string, number>;
-    dominant_emotion: string;
+    dominant: string;
     confidence: number;
+    emotions: Record<string, number>;
+    valence: number;
+    arousal: number;
   };
   attention: {
-    model: string;
-    attention_level: string;
-    attention_score: number;
-    focus_duration: number;
-    distraction_count: number;
-    engagement_quality: string;
+    score: number;
+    level: string;
+    confidence: number;
+    factors: {
+      eye_contact: number;
+      head_pose: number;
+      blink_rate: number;
+      facial_expression: number;
+    };
   };
   engagement: {
-    model: string;
-    engagement_state: string;
-    engagement_score: number;
-    interaction_frequency: number;
-    cognitive_load: number;
-    learning_efficiency: string;
+    score: number;
+    level: string;
+    trend: string;
+    duration: number;
   };
-  processing_time: number;
-  face_count: number;
+  gaze: {
+    direction: string;
+    coordinates: { x: number; y: number };
+    onScreen: boolean;
+    duration: number;
+  };
+  metadata: {
+    face_detected: boolean;
+    face_confidence: number;
+    face_bbox: [number, number, number, number];
+    processing_time: number;
+    model_versions: string[];
+  };
 }
 interface LiveCameraAnalysisProps {
   onAnalysisResult?: (result: CameraAnalysisResult) => void;
@@ -96,65 +109,112 @@ export function LiveCameraAnalysis({
   }, []);
   const analyzeFrame = useCallback(async () => {
     if (!videoRef.current || !canvasRef.current || !isInitialized) {
+      console.log('🚫 Skipping analysis - not ready:', { 
+        hasVideo: !!videoRef.current, 
+        hasCanvas: !!canvasRef.current, 
+        isInitialized 
+      });
       return;
     }
+    
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
+    
     if (!ctx || video.videoWidth === 0 || video.videoHeight === 0) {
+      console.log('🚫 Skipping analysis - video not ready:', { 
+        ctx: !!ctx, 
+        videoWidth: video?.videoWidth, 
+        videoHeight: video?.videoHeight 
+      });
       return;
     }
+
+    console.log('📸 Capturing frame for analysis...');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageData = canvas.toDataURL('image/jpeg', 0.8);
-    const base64Image = imageData.split(',')[1];
-    const startTime = performance.now();
+
     try {
-      const response = await fetch('/api/v1/analyze/frame', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          image: base64Image,
-          timestamp: Date.now(),
-          sessionId: `camera-session-${Date.now()}`,
-          options: {
-            detectEmotion: true,
-            detectAttention: true,
-            detectEngagement: true,
-            detectGaze: true
-          }
-        })
-      });
-      if (!response.ok) {
-        throw new Error(`Analysis failed: ${response.statusText}`);
-      }
-      const result = await response.json();
-      console.log('🔍 AI Analysis Result:', result); 
-      const endTime = performance.now();
-      const processingTime = endTime - startTime;
-      setProcessingTime(processingTime);
-      const analysisData = result.data || result;
-      setCurrentResult(analysisData);
-      if (onAnalysisResult) {
-        onAnalysisResult(analysisData);
-      }
-      const now = performance.now();
-      if (lastFrameTime.current > 0) {
-        const timeDiff = now - lastFrameTime.current;
-        frameCount.current++;
-        if (frameCount.current >= 10) { 
-          const avgFrameTime = timeDiff / frameCount.current;
-          setFps(Math.round(1000 / avgFrameTime));
-          frameCount.current = 0;
+      // Convert to blob for FormData instead of base64
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          console.error('❌ Failed to create blob from canvas');
+          return;
         }
-      }
-      lastFrameTime.current = now;
+
+        console.log('📤 Sending frame to backend:', {
+          blobSize: blob.size,
+          blobType: blob.type,
+          timestamp: Date.now()
+        });
+
+        const formData = new FormData();
+        formData.append('frame', blob, 'frame.jpg');
+        formData.append('timestamp', Date.now().toString());
+        formData.append('sessionId', `camera-session-${Date.now()}`);
+
+        const startTime = performance.now();
+        
+        try {
+          console.log('🔄 Making request to backend...');
+          // Use backend proxy endpoint instead of direct AI service
+          const response = await fetch('http://localhost:8000/api/analyze', {
+            method: 'POST',
+            body: formData
+          });
+
+          console.log('📨 Backend response:', {
+            status: response.status,
+            statusText: response.statusText,
+            ok: response.ok,
+            headers: Object.fromEntries(response.headers.entries())
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Backend error response:', errorText);
+            throw new Error(`Analysis failed: ${response.status} ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          console.log('✅ AI Analysis Result received:', result); 
+
+          const endTime = performance.now();
+          const processingTime = endTime - startTime;
+          setProcessingTime(processingTime);
+
+          const analysisData = result.data || result;
+          setCurrentResult(analysisData);
+          
+          if (onAnalysisResult) {
+            console.log('📊 Calling onAnalysisResult callback with:', analysisData);
+            onAnalysisResult(analysisData);
+          }
+
+          const now = performance.now();
+          if (lastFrameTime.current > 0) {
+            const timeDiff = now - lastFrameTime.current;
+            frameCount.current++;
+            
+            if (frameCount.current >= 10) { 
+              const avgFrameTime = timeDiff / frameCount.current;
+              setFps(Math.round(1000 / avgFrameTime));
+              frameCount.current = 0;
+            }
+          }
+          lastFrameTime.current = now;
+          
+        } catch (error) {
+          console.error('❌ Frame analysis network error:', error);
+          setCameraError(error instanceof Error ? error.message : 'Network analiz hatası');
+        }
+        
+      }, 'image/jpeg', 0.8);
+      
     } catch (error) {
-      console.error('Frame analysis failed:', error);
-      setCameraError(error instanceof Error ? error.message : 'Analiz hatası');
+      console.error('❌ Frame capture error:', error);
+      setCameraError(error instanceof Error ? error.message : 'Kamera yakalama hatası');
     }
   }, [isInitialized, onAnalysisResult]);
   const startAnalysis = useCallback(() => {
@@ -315,10 +375,10 @@ export function LiveCameraAnalysis({
                 <div className="flex items-center gap-3 mb-2">
                   <div 
                     className="w-4 h-4 rounded-full"
-                    style={{ backgroundColor: getEmotionColor(currentResult.emotion.dominant_emotion) }}
+                    style={{ backgroundColor: getEmotionColor(currentResult.emotion.dominant) }}
                   />
                   <span className="text-white font-medium">
-                    {getEmotionLabel(currentResult.emotion.dominant_emotion)}
+                    {getEmotionLabel(currentResult.emotion.dominant)}
                   </span>
                   <span className="text-gray-400 text-sm">
                     %{(currentResult.emotion.confidence * 100).toFixed(1)}
@@ -353,23 +413,23 @@ export function LiveCameraAnalysis({
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Dikkat Seviyesi</span>
                     <span className="text-white font-medium capitalize">
-                      {currentResult.attention.attention_level}
+                      {currentResult.attention.level}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Dikkat Skoru</span>
                     <span className="text-white font-medium">
-                      %{(currentResult.attention.attention_score * 100).toFixed(1)}
+                      %{(currentResult.attention.score * 100).toFixed(1)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Odaklanma Süresi</span>
+                    <span className="text-gray-300">Güven Oranı</span>
                     <span className="text-white font-medium">
-                      {currentResult.attention.focus_duration.toFixed(1)}s
+                      %{(currentResult.attention.confidence * 100).toFixed(1)}
                     </span>
                   </div>
                   <div className="text-sm text-gray-400">
-                    {currentResult.attention.engagement_quality}
+                    Göz Teması: %{(currentResult.attention.factors.eye_contact * 100).toFixed(0)}
                   </div>
                 </div>
               </div>
@@ -380,17 +440,17 @@ export function LiveCameraAnalysis({
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Katılım Durumu</span>
                     <span className="text-white font-medium capitalize">
-                      {currentResult.engagement.engagement_state}
+                      {currentResult.engagement.level}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Katılım Skoru</span>
                     <span className="text-white font-medium">
-                      %{(currentResult.engagement.engagement_score * 100).toFixed(1)}
+                      %{(currentResult.engagement.score * 100).toFixed(1)}
                     </span>
                   </div>
                   <div className="text-sm text-gray-400">
-                    Öğrenme: {currentResult.engagement.learning_efficiency}
+                    Trend: {currentResult.engagement.trend} | Süre: {currentResult.engagement.duration.toFixed(1)}s
                   </div>
                 </div>
               </div>
@@ -400,18 +460,18 @@ export function LiveCameraAnalysis({
                 <div className="space-y-1 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">İşlem Süresi</span>
-                    <span className="text-white">{currentResult.processing_time.toFixed(3)}s</span>
+                    <span className="text-white">{currentResult.metadata.processing_time.toFixed(3)}s</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Yüz Algılandı</span>
-                    <span className={currentResult.face_count > 0 ? 'text-green-400' : 'text-red-400'}>
-                      {currentResult.face_count > 0 ? 'Evet' : 'Hayır'}
+                    <span className={currentResult.metadata.face_detected ? 'text-green-400' : 'text-red-400'}>
+                      {currentResult.metadata.face_detected ? 'Evet' : 'Hayır'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Yüz Sayısı</span>
+                    <span className="text-gray-300">Yüz Güven Oranı</span>
                     <span className="text-white">
-                      {currentResult.face_count}
+                      %{(currentResult.metadata.face_confidence * 100).toFixed(1)}
                     </span>
                   </div>
                 </div>

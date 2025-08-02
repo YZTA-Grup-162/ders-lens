@@ -39,7 +39,7 @@ interface OptimizedCameraAnalysisProps {
 }
 export function OptimizedCameraAnalysis({ 
   onAnalysisResult, 
-  analysisInterval = 2000,
+  analysisInterval = 2000,  // throttle to 2 Hz
   autoStart = false 
 }: OptimizedCameraAnalysisProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -57,12 +57,7 @@ export function OptimizedCameraAnalysis({
       setCameraError(null);
       setConnectionStatus('connecting');
       const constraints = {
-        video: {
-          width: { ideal: 640, max: 1280 },
-          height: { ideal: 480, max: 720 },
-          frameRate: { ideal: 15, max: 30 },
-          facingMode: 'user'
-        },
+        video: { width: 320, height: 240, frameRate: { ideal: 2, max: 5 } },  // lower FPS
         audio: false
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -116,41 +111,39 @@ export function OptimizedCameraAnalysis({
     face_count: 0
   });
   const analyzeFrame = useCallback(async () => {
-    if (!videoRef.current || !canvasRef.current || !isInitialized) {
-      return;
-    }
+    if (!videoRef.current || !canvasRef.current || !isInitialized) return;
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    if (!ctx || video.videoWidth === 0 || video.videoHeight === 0) {
-      return;
-    }
-    const maxWidth = 640;
-    const maxHeight = 480;
-    const aspectRatio = video.videoWidth / video.videoHeight;
-    let canvasWidth = Math.min(video.videoWidth, maxWidth);
-    let canvasHeight = Math.min(video.videoHeight, maxHeight);
-    if (canvasWidth / canvasHeight > aspectRatio) {
-      canvasWidth = canvasHeight * aspectRatio;
-    } else {
-      canvasHeight = canvasWidth / aspectRatio;
-    }
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-    ctx.drawImage(video, 0, 0, canvasWidth, canvasHeight);
+    if (!ctx) return;
+
+    // Fixed processing size for performance
+    const width = 320;
+    const height = 240;
+    canvas.width = width;
+    canvas.height = height;
+
+    // Draw and encode
+    ctx.drawImage(video, 0, 0, width, height);
     const imageData = canvas.toDataURL('image/jpeg', 0.6);
     const base64Image = imageData.split(',')[1];
     const startTime = performance.now();
     let analysisData: StudentAnalysisResult = getDefaultAnalysisData();
     try {
-      const response = await fetch('http://localhost:8001/analyze', {
+      const response = await fetch('http://localhost:8001/api/v1/analyze/frame', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           image: base64Image,
-          analysis_type: 'all'
+          timestamp: Date.now(),
+          options: {
+            detectEmotion: true,
+            detectAttention: true,
+            detectEngagement: true,
+            detectGaze: true
+          }
         })
       });
       if (!response.ok) {
@@ -195,7 +188,6 @@ export function OptimizedCameraAnalysis({
   const startAnalysis = useCallback(() => {
     if (!isInitialized) return;
     setIsAnalyzing(true);
-    setCameraError(null);
     analysisIntervalRef.current = setInterval(analyzeFrame, analysisInterval);
   }, [isInitialized, analyzeFrame, analysisInterval]);
   const stopAnalysis = useCallback(() => {

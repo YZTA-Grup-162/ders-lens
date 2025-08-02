@@ -114,6 +114,11 @@ export const CameraDetector: React.FC<CameraDetectorProps> = ({
 
   const captureAndAnalyze = useCallback(async () => {
     if (!videoRef.current || !canvasRef.current || isAnalyzing) return;
+    if (!streamRef.current) {
+      setError('Kamera akışı bulunamadı.');
+      return;
+    }
+    setError(null);
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -126,27 +131,25 @@ export const CameraDetector: React.FC<CameraDetectorProps> = ({
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const imageData = canvas.toDataURL('image/jpeg', 0.8);
-
     setIsAnalyzing(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/v1/analyze/frame', {
+      // Convert canvas to blob for FormData
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, 'image/jpeg', 0.8);
+      });
+
+      if (!blob) {
+        setError('Canvas görüntüsü alınamadı.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('image', blob, 'capture.jpg');
+
+      const response = await fetch('http://localhost:8001/api/gaze/analyze_classroom', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          image: imageData,  
-          timestamp: Date.now(),
-          sessionId: 'demo-session',
-          options: {
-            detectEmotion: true,
-            detectAttention: true,
-            detectEngagement: true,
-            detectGaze: true
-          }
-        })
+        body: formData
       });
 
       if (response.ok) {
@@ -186,6 +189,7 @@ export const CameraDetector: React.FC<CameraDetectorProps> = ({
       }
     } catch (err) {
       console.error('Analysis error:', err);
+      setError(`Analiz hatası: ${err instanceof Error ? err.message : 'Bilinmeyen hata'}`);
     } finally {
       setIsAnalyzing(false);
     }

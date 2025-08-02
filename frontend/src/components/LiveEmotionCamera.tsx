@@ -27,7 +27,7 @@ interface PredictionResult {
   frame_id: string;
   timestamp: string;
 }
-const API_URL = 'http://localhost:8000/api/analyze'
+const API_URL = '/api/analyze'
 const emotionLabels: Record<number, string> = {
   0: 'Boredom',
   1: 'Confusion',

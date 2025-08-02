@@ -24,7 +24,7 @@ interface DemoAnalysis {
   models_loaded: string[];
   error?: string;
 }
-const DEMO_API_URL = 'http://localhost:8000/api/demo';
+const DEMO_API_URL = '/api/demo';
 export const StudentDemo: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -104,46 +104,41 @@ export const StudentDemo: React.FC = () => {
     if (!isActive || backendStatus !== 'online') return;
     const analyzeFrame = async () => {
       if (!videoRef.current || !canvasRef.current) return;
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      try {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const blob = await new Promise<Blob>((resolve) => {
-          canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.85);
-        });
-        const formData = new FormData();
-        formData.append('frame', blob, 'frame.jpg');
-        const response = await fetch(DEMO_API_URL, {
-          method: 'POST',
-          body: formData,
-        });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data: DemoAnalysis = await response.json();
-        setMetrics(data.display_metrics);
-        setSessionInfo({
-          duration: data.session_duration,
-          frameCount: data.frame_count,
-          modelVersion: data.model_version,
-          modelsLoaded: data.models_loaded
-        });
-        if (data.frame_count % 5 === 0) {
-          setAttentionTrend(prev => [...prev.slice(-20), data.display_metrics.attention]);
-          setEngagementTrend(prev => [...prev.slice(-20), data.display_metrics.engagement]);
-        }
-        setAvgProcessingTime(data.processing_time_ms);
-        setLastUpdateTime(Date.now());
-        setError(null);
-      } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : 'Analysis failed';
-        setError(`Analysis failed: ${errorMsg}`);
-        console.error('Demo analysis error:', err);
+      const video = videoRef.current, canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d'); if (!ctx) return;
+      // fixed processing size
+      canvas.width = 320; canvas.height = 240;
+      ctx.drawImage(video, 0, 0, 320, 240);
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((b) => {
+          if (b) resolve(b);
+          else reject(new Error('Canvas.toBlob returned null'));
+        }, 'image/jpeg', 0.5);
+      });
+      const formData = new FormData();
+      formData.append('frame', blob, 'frame.jpg');
+      const response = await fetch(DEMO_API_URL, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data: DemoAnalysis = await response.json();
+      setMetrics(data.display_metrics);
+      setSessionInfo({
+        duration: data.session_duration,
+        frameCount: data.frame_count,
+        modelVersion: data.model_version,
+        modelsLoaded: data.models_loaded
+      });
+      if (data.frame_count % 5 === 0) {
+        setAttentionTrend(prev => [...prev.slice(-20), data.display_metrics.attention]);
+        setEngagementTrend(prev => [...prev.slice(-20), data.display_metrics.engagement]);
       }
+      setAvgProcessingTime(data.processing_time_ms);
+      setLastUpdateTime(Date.now());
+      setError(null);
     };
-    const interval = setInterval(analyzeFrame, 500);
+    const interval = setInterval(analyzeFrame, 2000);  // every 2s
     return () => clearInterval(interval);
   }, [isActive, backendStatus]);
   const formatDuration = (seconds: number) => {

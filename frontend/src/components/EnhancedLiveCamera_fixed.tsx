@@ -105,17 +105,6 @@ export const EnhancedLiveCamera: React.FC = () => {
   useEffect(() => {
     const initCamera = async () => {
       try {
-        console.log('🎥 Starting camera initialization...');
-        
-        // Check camera permissions
-        try {
-          const permissions = await navigator.permissions.query({ name: 'camera' as PermissionName });
-          console.log('📹 Camera permission status:', permissions.state);
-        } catch (e) {
-          console.log('📹 Could not check permissions:', e);
-        }
-        
-        console.log('📹 Requesting camera access...');
         const stream = await navigator.mediaDevices.getUserMedia({ 
           video: { 
             width: 1280, 
@@ -123,41 +112,13 @@ export const EnhancedLiveCamera: React.FC = () => {
             frameRate: 30 
           } 
         });
-        
-        console.log('📹 Camera stream obtained successfully');
-        console.log('📹 Video tracks:', stream.getVideoTracks().length);
-        console.log('📹 Stream active:', stream.active);
-        
         if (videoRef.current) {
-          console.log('📹 Setting video source...');
           videoRef.current.srcObject = stream;
-          
-          videoRef.current.onloadedmetadata = () => {
-            console.log('📹 Video metadata loaded');
-            console.log('📹 Video dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
-            console.log('📹 Video ready state:', videoRef.current?.readyState);
-          };
-          
-          videoRef.current.oncanplay = () => {
-            console.log('📹 Video can play');
-          };
-          
-          videoRef.current.onplay = () => {
-            console.log('📹 Video started playing');
-          };
-          
           setConnected(true);
-          console.log('📹 Camera connection set to true');
-        } else {
-          console.error('📹 Video ref is null!');
         }
       } catch (err) {
-        console.error('❌ Camera error details:', err);
-        if (err instanceof Error) {
-          console.error('❌ Error name:', err.name);
-          console.error('❌ Error message:', err.message);
-        }
         setError('Kameraya erişim sağlanamadı. Lütfen izinleri kontrol edin.');
+        console.error('Camera error:', err);
       }
     };
 
@@ -204,29 +165,6 @@ export const EnhancedLiveCamera: React.FC = () => {
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Debug: Log video dimensions and check if video is playing
-      console.log('🎥 Video Debug:', {
-        videoWidth: video.videoWidth,
-        videoHeight: video.videoHeight,
-        canvasWidth: canvas.width,
-        canvasHeight: canvas.height,
-        videoCurrentTime: video.currentTime,
-        videoReadyState: video.readyState,
-        videoPaused: video.paused,
-        videoEnded: video.ended
-      });
-
-      // Check if video is actually playing
-      if (video.readyState < 2) {
-        console.warn('⚠️ Video not ready for capture, readyState:', video.readyState);
-        return;
-      }
-
-      if (video.videoWidth === 0 || video.videoHeight === 0) {
-        console.warn('⚠️ Video dimensions are 0, skipping frame analysis');
-        return;
-      }
-
       try {
         const blob = await new Promise<Blob>((resolve) => {
           canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.8);
@@ -244,22 +182,16 @@ export const EnhancedLiveCamera: React.FC = () => {
           body: formData,
         });
 
-        console.log('🌐 API Response status:', response.status);
-
-        if (!response.ok) throw new Error(`Analysis failed: ${response.status} ${response.statusText}`);
+        if (!response.ok) throw new Error('Analysis failed');
 
         const data = await response.json();
-        console.log('📥 Raw AI Response:', data);
-        
         setAnalysis(data);
         
         // Yüz algılama durumunu takip et
         if (!data.face.detected) {
-          setNoFaceDetectedTime(prev => prev + 1000);
-          console.log('❌ No face detected for', noFaceDetectedTime + 1000, 'ms');
+          setNoFaceDetectedTime(prev => prev + 100);
         } else {
           setNoFaceDetectedTime(0);
-          console.log('✅ Face detected with confidence:', (data.face.confidence * 100).toFixed(1), '%');
         }
 
         console.log('📊 AI Analysis Result:', {
@@ -268,8 +200,7 @@ export const EnhancedLiveCamera: React.FC = () => {
           engagement: `${(data.engagement.level * 100).toFixed(1)}% (${data.engagement.category})`,
           gaze: `${data.gaze.direction} at (${(data.gaze.x * 100).toFixed(0)}%, ${(data.gaze.y * 100).toFixed(0)}%)`,
           face: `detected: ${data.face.detected}, confidence: ${(data.face.confidence * 100).toFixed(1)}%`,
-          processing: `${data.processingTime.toFixed(1)}ms`,
-          faceDetails: data.face // Adding full face details for debugging
+          processing: `${data.processingTime.toFixed(1)}ms`
         });
 
         if (data.attention.score === 0.5 && data.gaze.x === 0.5 && data.emotion.dominant === 'neutral') {
@@ -277,16 +208,16 @@ export const EnhancedLiveCamera: React.FC = () => {
         }
 
         if (data.gaze && data.gaze.onScreen) {
-          setGazeHistory(prev => [...prev.slice(-10), { // Further reduced history size
+          setGazeHistory(prev => [...prev.slice(-50), {
             x: data.gaze.x,
             y: data.gaze.y,
             timestamp: Date.now()
           }]);
         }
 
-        setAttentionHistory(prev => [...prev.slice(-10), data.attention.score]); // Further reduced history size
-        setEmotionHistory(prev => [...prev.slice(-10), data.emotion.dominant]); // Further reduced history size
-        setEngagementHistory(prev => [...prev.slice(-10), data.engagement.level]); // Further reduced history size
+        setAttentionHistory(prev => [...prev.slice(-30), data.attention.score]);
+        setEmotionHistory(prev => [...prev.slice(-30), data.emotion.dominant]);
+        setEngagementHistory(prev => [...prev.slice(-30), data.engagement.level]);
 
         setError(null);
       } catch (err) {
@@ -301,7 +232,7 @@ export const EnhancedLiveCamera: React.FC = () => {
       }
     };
 
-    const interval = setInterval(analyzeFrame, 1000); // Further reduced to 1 second for better performance
+    const interval = setInterval(analyzeFrame, 100); 
     return () => clearInterval(interval);
   }, [connected, isActive, calibrating]);
 
@@ -501,7 +432,7 @@ export const EnhancedLiveCamera: React.FC = () => {
                 ? 'border-green-400 shadow-lg shadow-green-400/30'
                 : 'border-gray-300'
             }`}
-            style={{ maxWidth: '640px', width: '100%', minHeight: '480px' }}
+            style={{ maxWidth: '640px', width: '100%' }}
           />
           <canvas
             ref={overlayCanvasRef}

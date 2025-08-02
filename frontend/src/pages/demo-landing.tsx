@@ -18,6 +18,10 @@ export const DemoLandingPage: React.FC = () => {
     window.location.href = '/demo/student';
   };
 
+  const handleJoinEnhancedDemo = () => {
+    window.location.href = '/demo/enhanced';
+  };
+
   const handleViewTeacher = () => {
     window.location.href = '/demo/teacher';
   };
@@ -75,6 +79,18 @@ export const DemoLandingPage: React.FC = () => {
             <NeonButton
               size="lg"
               variant="primary"
+              onClick={handleJoinEnhancedDemo}
+              className="text-lg px-8 py-4"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Gelişmiş Demo
+            </NeonButton>
+
+            <NeonButton
+              size="lg"
+              variant="secondary"
               onClick={handleJoinDemo}
               className="text-lg px-8 py-4"
             >
@@ -86,7 +102,7 @@ export const DemoLandingPage: React.FC = () => {
 
             <NeonButton
               size="lg"
-              variant="secondary"
+              variant="accent"
               onClick={handleViewTeacher}
               className="text-lg px-8 py-4"
             >
@@ -185,8 +201,9 @@ export const DemoLandingPage: React.FC = () => {
 
             <div className="mt-8 pt-8 border-t border-gray-600/30">
               <h4 className="text-lg font-bold text-white mb-4">
-                {t('demo.scenarios.title', 'Demo Scenarios')}
+                {t('demo.scenarios.title')}
               </h4>
+              
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                 {[
                   { key: 'standard', icon: '📚' },

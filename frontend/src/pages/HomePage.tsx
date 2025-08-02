@@ -70,11 +70,19 @@ const HomePage = () => {
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <Link 
-                to="/demo"
+                to="/demo/enhanced"
                 className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               >
+                <Eye className="h-5 w-5 mr-2 group-hover:animate-pulse" />
+                Gelişmiş Demo
+              </Link>
+              
+              <Link 
+                to="/demo"
+                className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
                 <Play className="h-5 w-5 mr-2 group-hover:animate-pulse" />
-                Demo'ya Başla
+                Standart Demo
               </Link>
               
               <Link

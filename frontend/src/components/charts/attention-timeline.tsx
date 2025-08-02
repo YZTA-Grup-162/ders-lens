@@ -217,8 +217,7 @@ export const AttentionTimeline: React.FC<AttentionTimelineProps> = ({
             click: handleChartClick
           }}
           opts={{
-            renderer: 'canvas',
-            useDirtyRect: false
+            renderer: 'canvas'
           }}
         />
       </div>

@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CameraDetector } from '../components/ai/camera-detector';
-import { Header } from '../components/layout/header';
+import Header from '../components/layout/Header';
 import { Layout } from '../components/layout/layout';
 import { GlassCard } from '../components/ui/glass-card';
 

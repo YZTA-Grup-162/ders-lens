@@ -38,7 +38,7 @@ const Header = () => {
             className="flex items-center space-x-3"
           >
             <img 
-              src="/derslens_transp.png" 
+              src="/ders-lens-logo.png" 
               alt="DersLens" 
               className="h-10 w-10"
             />

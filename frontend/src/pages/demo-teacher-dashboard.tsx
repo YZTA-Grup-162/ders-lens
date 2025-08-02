@@ -13,7 +13,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Header } from '../components/layout/header';
+import Header from '../components/layout/Header';
 import { Layout } from '../components/layout/layout';
 import { GlassCard } from '../components/ui/glass-card';
 import { NeonButton } from '../components/ui/neon-button';

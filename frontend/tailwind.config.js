@@ -20,6 +20,9 @@ export default {
           900: '#1e3a8a',
         },
         accent: {
+          cyan: '#06b6d4',
+          purple: '#9333ea',
+          emerald: '#10b981',
           50: '#f0f9ff',
           100: '#e0f2fe',
           200: '#bae6fd',
@@ -30,6 +33,11 @@ export default {
           700: '#0369a1',
           800: '#075985',
           900: '#0c4a6e',
+        },
+        dark: {
+          700: '#374151',
+          800: '#1f2937',
+          900: '#111827',
         }
       },
       fontFamily: {
@@ -39,6 +47,7 @@ export default {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.3s ease-out',
         'pulse-soft': 'pulseSoft 2s infinite',
+        'flash': 'flash 0.5s infinite alternate',
       },
       keyframes: {
         fadeIn: {
@@ -53,7 +62,19 @@ export default {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.8' },
         },
+        flash: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.3' },
+        },
       },
+      boxShadow: {
+        'glow-sm': '0 0 10px rgba(59, 130, 246, 0.3)',
+        'glow-md': '0 0 20px rgba(59, 130, 246, 0.4)',
+        'neon-cyan': '0 0 15px rgba(6, 182, 212, 0.5)',
+      },
+      backdropBlur: {
+        xs: '2px',
+      }
     },
   },
   plugins: [],
