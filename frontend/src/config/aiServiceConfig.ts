@@ -6,7 +6,7 @@
 export const AI_SERVICE_CONFIG = {
   // Enhanced AI Service (NEW - with MPIIGaze + FER2013)
   ENHANCED_SERVICE: {
-    baseUrl: 'http://localhost:5000',
+    baseUrl: process.env.NODE_ENV === 'production' ? '' : (process.env.REACT_APP_AI_SERVICE_URL || 'http://localhost:5000'),
     endpoints: {
       analyze: '/api/analyze',
       health: '/health',
@@ -31,7 +31,7 @@ export const AI_SERVICE_CONFIG = {
   
   // Legacy Service (OLD)
   LEGACY_SERVICE: {
-    baseUrl: 'http://localhost:8000',
+    baseUrl: process.env.NODE_ENV === 'production' ? '' : (process.env.REACT_APP_API_URL || 'http://localhost:8000'),
     endpoints: {
       analyze: '/api/analyze'
     },

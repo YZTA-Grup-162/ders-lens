@@ -412,15 +412,7 @@ class AdvancedEmotionDetector:
                 'neutral': 0.3
             }
     def detect_emotions(self, frame: np.ndarray, landmarks: np.ndarray = None) -> EmotionState:
-        """🎭 Main emotion detection function
         
-        Args:
-            frame: Input image frame
-            landmarks: Optional facial landmarks
-            
-        Returns:
-            EmotionState: Comprehensive emotional state analysis
-        """
         start_time = time.time()
         try:
             features = self.extract_facial_features_for_emotion(frame, landmarks)

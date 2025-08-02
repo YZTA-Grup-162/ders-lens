@@ -325,9 +325,8 @@ class EnhancedComputerVision:
                                 gaze_data: GazeData, 
                                 head_pose: HeadPoseData, 
                                 emotion_data: EmotionData) -> float:
-        """Calculate comprehensive attention score (0-100)"""
         
-        score = 50.0  # Base score
+        score = 50.0  
         
         # Gaze contribution (40% of score)
         if gaze_data.on_screen:

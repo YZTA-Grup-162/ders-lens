@@ -165,7 +165,9 @@
                 return;
             }
             
-            const wsUrl = 'ws://localhost:8000/ws/student/docker_test_user';
+            const wsUrl = location.protocol === 'https:' 
+                ? 'wss://ders-lens.fly.dev/ws/student/docker_test_user'
+                : 'ws://localhost:8000/ws/student/docker_test_user';
             log(`🔌 Connecting to: ${wsUrl}`, 'info');
             updateStatus('🟡 Connecting...', 'connecting');
             

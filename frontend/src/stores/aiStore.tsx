@@ -129,7 +129,10 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
     }
   };
   const connectWebSocket = () => {
-    const ws = new WebSocket('ws://localhost:8000/ws/') // Added a forward slash at the end of the URL
+    const wsUrl = process.env.NODE_ENV === 'production' 
+      ? `wss://${window.location.host}/ws/`
+      : 'ws://localhost:8000/ws/';
+    const ws = new WebSocket(wsUrl);
     ws.onopen = () => {
       console.log('WebSocket bağlantısı kuruldu');
     };

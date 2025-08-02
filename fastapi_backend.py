@@ -415,7 +415,10 @@ async def demo_page():
             let ws = null;
             
             function connectWebSocket() {
-                ws = new WebSocket('ws://localhost:8000/ws');
+                const wsUrl = location.protocol === 'https:' 
+                    ? 'wss://ders-lens.fly.dev/ws'
+                    : 'ws://localhost:8000/ws';
+                ws = new WebSocket(wsUrl);
                 
                 ws.onopen = function(event) {
                     document.getElementById('status').innerHTML = 'Connected to WebSocket';

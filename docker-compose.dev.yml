@@ -16,7 +16,6 @@ services:
       - ./models_daisee:/app/models_daisee
       - ./models_mendeley:/app/models_mendeley
       - ./models_mpiigaze:/app/models_mpiigaze
-      - ./models_comprehensive_fixed:/app/models_comprehensive_fixed
     environment:
       - DEBUG=True
       - MODEL_PATH=/app/models

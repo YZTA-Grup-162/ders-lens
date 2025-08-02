@@ -7,14 +7,34 @@ app = 'ders-lens'
 primary_region = 'fra'
 
 [build]
+  dockerfile = "Dockerfile"
+  strategy = "dockerfile"
+  target = "production"
+
+[env]
+  PORT = "80"
+  DEBUG = "false"
+  DATABASE_URL = "sqlite:///./production.db"
+  SECRET_KEY = "fly-production-secret-key-2025"
+  CORS_ORIGINS = "https://ders-lens.fly.dev"
+  GEMINI_API_KEY = "AIzaSyD9hG_ThWUY3As1m8IMrclycoiplwpYARg"
+  AI_SERVICE_URL = "http://localhost:5000"
+  FRONTEND_URL = "https://ders-lens.fly.dev"
+  REACT_APP_API_URL = "https://ders-lens.fly.dev/api"
+  REACT_APP_AI_SERVICE_URL = "https://ders-lens.fly.dev"
 
 [http_service]
-  internal_port = 8000
+  internal_port = 80
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1
   processes = ['app']
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 1000
+    soft_limit = 800
 
 [[vm]]
   memory = '2gb'

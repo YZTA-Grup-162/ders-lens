@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     api_v1_str: str = "/api/v1"
     host: str = "0.0.0.0"
     port: int = 8000
-    cors_origins: List[str] = ["http://localhost:3000", "http://localhost:5173"]
+    cors_origins: List[str] = ["https://ders-lens.fly.dev", "http://localhost:3000", "http://localhost:5173", "https://ders-lens.com", "http://derslens.fly.dev"]
     database_url: str = "postgresql+asyncpg://user:password@localhost:5432/derslens"
     database_pool_size: int = 10
     database_max_overflow: int = 20
@@ -59,7 +59,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     DATABASE_URL: str = "sqlite:///./ders_lens.db"
-    ALLOWED_HOSTS: List[str] = ["*"]
+    ALLOWED_HOSTS: List[str] = ["https://ders-lens.fly.dev", "http://localhost:3000", "http://localhost:5173", "*"]
     MODEL_PATH: str = "./models"
     OPENCV_CONFIDENCE_THRESHOLD: float = 0.5
     ATTENTION_THRESHOLD: float = 0.7

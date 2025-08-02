@@ -17,7 +17,7 @@ class DersLensAPIService {
   constructor() {
     this.baseURL = process.env.NODE_ENV === 'production' 
       ? '/api' 
-      : 'http://localhost:8000/api';
+      : (process.env.REACT_APP_API_URL || 'http://localhost:8000/api');
   }
   /**
    * Analyzes a video frame using the AI service
