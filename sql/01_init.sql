@@ -4,11 +4,11 @@
 \c postgres
 
 -- Create database if it doesn't exist
-SELECT 'CREATE DATABASE attentionpulse'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'attentionpulse')\gexec
+SELECT 'CREATE DATABASE derslens'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'derslens')\gexec
 
--- Connect to the attentionpulse database
-\c attentionpulse
+-- Connect to the derslens database
+\c derslens
 
 -- Create extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

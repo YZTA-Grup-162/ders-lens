@@ -1,9 +1,4 @@
-"""
-Model Architecture Fix for AttentionPulse
 
-Fixes the model loading issues by providing correct architectures 
-that match the actual trained models.
-"""
 import logging
 from typing import Any, Dict, Optional, List, Tuple, Union
 import torch

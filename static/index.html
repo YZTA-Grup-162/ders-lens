@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AttentionPulse - Docker Version</title>
+    <title>DersLens</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -99,7 +99,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 AttentionPulse - Docker Version 2.0</h1>
+            <h1>DersLens</h1>
             <div id="connectionStatus" class="status-badge disconnected">🔴 Disconnected</div>
         </div>
         
@@ -247,15 +247,13 @@
             log('🗑️ Log cleared', 'info');
         }
         
-        // Auto-connect when page loads
         window.onload = function() {
-            log('🚀 AttentionPulse Docker frontend loaded', 'success');
-            log('📝 Browser: ' + navigator.userAgent, 'info');
-            log('🔌 WebSocket support: ' + (typeof WebSocket !== 'undefined' ? 'Available' : 'Not available'), 'info');
+            log('DersLens Docker frontend loaded', 'success');
+            log('Browser: ' + navigator.userAgent, 'info');
+            log('WebSocket support: ' + (typeof WebSocket !== 'undefined' ? 'Available' : 'Not available'), 'info');
             
-            // Auto-connect after 2 seconds
             setTimeout(() => {
-                log('⏰ Auto-connecting in 2 seconds...', 'info');
+                log('Auto-connecting in 2 seconds...', 'info');
                 setTimeout(connect, 2000);
             }, 1000);
         };

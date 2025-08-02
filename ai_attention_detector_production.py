@@ -1,16 +1,16 @@
-"""
-AttentionPulse - Production AI Detector
-"""
+
 import json
 import logging
 import os
 import time
 from pathlib import Path
 from typing import Dict, Optional, Tuple
+
 import cv2
 import numpy as np
 import torch
 import torch.nn as nn
+
 logger = logging.getLogger(__name__)
 class SimpleAttentionModel(nn.Module):
     def __init__(self):

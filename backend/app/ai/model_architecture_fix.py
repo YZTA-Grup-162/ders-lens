@@ -1,17 +1,14 @@
-"""
-Model Architecture Fix for AttentionPulse
 
-Fixes the model loading issues by providing correct architectures 
-that match the actual trained models.
-"""
 import logging
-from typing import Any, Dict, Optional, List, Tuple, Union
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
-import numpy as np
-from pathlib import Path
+
 logger = logging.getLogger(__name__)
 class DAiSEEAttentionModelFixed(nn.Module):
     def __init__(self, num_classes=2):

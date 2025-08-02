@@ -2,10 +2,13 @@
 import json
 from functools import lru_cache
 from typing import List, Optional
+
 from pydantic import validator
 from pydantic_settings import BaseSettings
+
+
 class Settings(BaseSettings):
-    app_name: str = "AttentionPulse"
+    app_name: str = "DersLens"
     app_version: str = "1.0.0"
     debug: bool = False
     log_level: str = "INFO"
@@ -13,7 +16,7 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8000
     cors_origins: List[str] = ["http://localhost:3000", "http://localhost:5173"]
-    database_url: str = "postgresql+asyncpg://user:password@localhost:5432/attentionpulse"
+    database_url: str = "postgresql+asyncpg://user:password@localhost:5432/derslens"
     database_pool_size: int = 10
     database_max_overflow: int = 20
     redis_url: str = "redis://localhost:6379/0"
@@ -49,13 +52,13 @@ class Settings(BaseSettings):
     kaggle_key: Optional[str] = None
     frontend_url: str = "http://localhost:3000"
     websocket_path: str = "/ws"
-    APP_NAME: str = "AttentionPulse"
+    APP_NAME: str = "DersLens"
     DEBUG: bool = True
     VERSION: str = "1.0.0"
     SECRET_KEY: str = "PRODUCTION_SECRET_KEY"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    DATABASE_URL: str = "sqlite:///./attention_pulse.db"
+    DATABASE_URL: str = "sqlite:///./ders_lens.db"
     ALLOWED_HOSTS: List[str] = ["*"]
     MODEL_PATH: str = "./models"
     OPENCV_CONFIDENCE_THRESHOLD: float = 0.5

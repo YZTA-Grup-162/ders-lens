@@ -1,22 +1,23 @@
-"""
-ONNX optimization and high-performance inference engine for AttentionPulse
-"""
+
 import asyncio
 import logging
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
 import cv2
 import numpy as np
 import onnx
 import onnxruntime as ort
 import torch
+from PIL import Image
+
 from app.core.config import settings
 from app.models.schemas import (AttentionPrediction, AttentionState,
                                 EmotionClass, EmotionPrediction,
                                 EngagementLevel, EngagementPrediction,
                                 FaceFeatures, PredictionResult)
-from PIL import Image
+
 logger = logging.getLogger(__name__)
 class ONNXModelOptimizer:
     def __init__(self):

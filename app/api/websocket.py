@@ -5,15 +5,18 @@ import base64
 import json
 import logging
 from typing import Any, Dict, List
+
 import cv2
 import numpy as np
+from fastapi import Depends, WebSocket, WebSocketDisconnect
+from sqlalchemy.orm import Session
+
 from app.ai.attention_detector import AttentionData
 from app.ai.working_inference import HighFidelityAttentionEngine
 from app.core.auth import verify_token
 from app.core.database import User, get_db
 from app.models.session import SessionData
-from fastapi import Depends, WebSocket, WebSocketDisconnect
-from sqlalchemy.orm import Session
+
 logger = logging.getLogger(__name__)
 def convert_to_json_safe(obj: Any) -> Any:
     if isinstance(obj, np.integer):
@@ -83,6 +86,7 @@ class ConnectionManager:
             try:
                 prediction_result = await self.attention_detector.process_frame(frame)
                 import time
+
                 from app.ai.attention_detector import (AttentionLevel,
                                                        DistractionType)
                 attention_score = prediction_result.get('attention_score', 0.5)
@@ -247,7 +251,7 @@ async def websocket_endpoint_student(websocket: WebSocket, user_id: str):
             json.dumps({
                 "type": "connection_status",
                 "status": "connected",
-                "message": "Successfully connected to AttentionPulse"
+                "message": "Successfully connected to DersLens"
             }),
             websocket
         )

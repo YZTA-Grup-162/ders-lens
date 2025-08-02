@@ -1,11 +1,14 @@
 
 import math
 from typing import Dict, List, Optional, Tuple
+
 import timm
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.hub import load_state_dict_from_url
+
+
 class SelfAttention(nn.Module):
     def __init__(self, d_model: int, num_heads: int = 8, dropout: float = 0.1):
         super().__init__()
@@ -145,8 +148,8 @@ class EmotionHead(nn.Module):
         )
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.classifier(x)
-class AttentionPulseModel(nn.Module):
-    """Complete DersLens model with temporal fusion
+class DersLensModel(nn.Module):
+    """
     Architecture:
     1. Vision backbone (MobileViT XS or EfficientNet-B3)
     2. Temporal module (Causal CNN or Bi-LSTM)
@@ -295,8 +298,8 @@ class MultiTaskLoss(nn.Module):
             "engagement_loss": engagement_loss,
             "emotion_loss": emotion_loss
        }
-def create_model(config: Dict) -> AttentionPulseModel:
-    return AttentionPulseModel(
+def create_model(config: Dict) -> DersLensModel:
+    return DersLensModel(
         backbone_type=config.get("backbone_type", "mobilevit"),
         sequence_length=config.get("sequence_length", 32),
         handcrafted_dim=config.get("handcrafted_dim", 20),

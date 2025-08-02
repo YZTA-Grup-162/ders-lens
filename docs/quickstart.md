@@ -1,6 +1,6 @@
 # Hızlı Başlangıç Kılavuzu
 
-Bu döküman AttentionPulse projesini için geliştirme ortamının hızlıca çalıştırılması için hazırlanmıştır.
+Bu döküman DersLens projesini için geliştirme ortamının hızlıca çalıştırılması için hazırlanmıştır.
 
 ## Gereksinimler
 

@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
 import matplotlib.pyplot as plt
 import numpy as np
 import onnx
@@ -15,15 +16,17 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms as transforms
-from app.ai.datasets import AttentionDataset, DatasetManager
-from app.ai.inference import ONNXModelOptimizer
-from app.ai.models import (AttentionPulseModel, MultiTaskLoss,
-                           count_parameters, create_model, get_model_size_mb)
-from app.core.config import settings
 from sklearn.metrics import classification_report, confusion_matrix, f1_score
 from sklearn.utils.class_weight import compute_class_weight
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
+
+from app.ai.datasets import AttentionDataset, DatasetManager
+from app.ai.inference import ONNXModelOptimizer
+from app.ai.models import (DersLensModel, MultiTaskLoss, count_parameters,
+                           create_model, get_model_size_mb)
+from app.core.config import settings
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 class EarlyStopping:
@@ -47,7 +50,7 @@ class EarlyStopping:
                 model.load_state_dict(self.best_weights)
             return True
         return False
-class AttentionPulseTrainer:
+class DersLensTrainer:
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -381,7 +384,7 @@ def create_training_config() -> Dict[str, Any]:
         'log_dir': './logs'
     }
 async def main():
-    parser = argparse.ArgumentParser(description='Train AttentionPulse Model')
+    parser = argparse.ArgumentParser(description='Train DersLens Model')
     parser.add_argument('--config', type=str, help='Path to training config file')
     parser.add_argument('--export-only', action='store_true', help='Only export existing model to ONNX')
     parser.add_argument('--model-path', type=str, help='Path to trained model for export')
@@ -395,7 +398,7 @@ async def main():
         with open(config_path, 'w') as f:
             json.dump(config, f, indent=2)
         logger.info(f"Default config saved to {config_path}")
-    trainer = AttentionPulseTrainer(config)
+    trainer = DersLensTrainer(config)
     if args.export_only:
         model_path = args.model_path or str(trainer.output_dir / "best_model.pth")
         if not Path(model_path).exists():

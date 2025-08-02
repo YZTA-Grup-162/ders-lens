@@ -4,10 +4,13 @@ Performance test using Locust
 import base64
 import io
 import json
+
 import numpy as np
 from locust import HttpUser, between, task
 from PIL import Image
-class AttentionPulseUser(HttpUser):
+
+
+class DersLensUser(HttpUser):
     wait_time = between(1, 3)
     def on_start(self):
         self.sample_image = self._create_sample_image()
@@ -71,8 +74,8 @@ class StudentUser(HttpUser):
     @task(1)
     def student_feedback(self):
         self.client.get("/api/student/feedback")
-class LightLoad(AttentionPulseUser):
+class LightLoad(DersLensUser):
     weight = 70
-class HeavyLoad(AttentionPulseUser):
+class HeavyLoad(DersLensUser):
     weight = 30
     wait_time = between(0.5, 1.5)

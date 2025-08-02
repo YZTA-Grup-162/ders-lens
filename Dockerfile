@@ -1,4 +1,4 @@
-# Multi-stage Dockerfile for AttentionPulse Backend
+# Multi-stage Dockerfile for DersLens
 FROM python:3.11-slim AS base
 
 RUN apt-get update && \
