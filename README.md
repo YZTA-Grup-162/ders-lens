@@ -73,6 +73,8 @@ https://github.com/YZTA-Grup-162/ders-lens/tree/main/toplanti-notlari
   **Sprint içinde tamamlanması tahmin edilen puan:** 100 Puan  
   **Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde ikinci sprintin 100 ile başlaması gerektiği kararlaştırıldı.  
   **Backlog düzeni ve Story seçimleri:** Ürün backlog'umuz, kullanıcı deneyimini destekleyecek mekanik ve içeriklere öncelik verilerek yapılandırılmıştır. Sprint Board üzerinde görünen etiketler frontend, backend, görüntü işleme, model, devops (sunucu vb. işler için) ve R&D şeklindedir.  
+  https://github.com/orgs/YZTA-Grup-162/projects/6  
+
 Daily Scrum toplantıları, Google Meet ve Whatsapp üzerinden devam etmiştir. 
   <details>
   <summary><h3> Daly Scrum: Ekran Görüntüleri </h3></summary>  
@@ -103,6 +105,45 @@ Daily Scrum toplantıları, Google Meet ve Whatsapp üzerinden devam etmiştir.
 - Ekip belirlenen veri setleri ile modelin geliştirilmesine devam edecek.
 -  Model geliştirme ve hata giderme süreçlerimize "hızlı düzeltme" (hotfix) veya "öncelikli hata çözümü" mekanizmaları dahil edilecek.
 </details>
+<details>
+  <summary><h2> Sprint 3 </h2></summary>  
+   
+  **Sprint içinde tamamlanması tahmin edilen puan:** 100 Puan  
+  **Puan tamamlama mantığı:** Proje boyunca tamamlanması gereken toplam 300 puanlık backlog bulunmaktadır. 3 sprinte bölündüğünde üçüncü sprint 100 ile başlatıldı.  
+  **Backlog düzeni ve Story seçimleri:** Ürün backlog'umuz, kullanıcı deneyimini destekleyecek mekanik ve içeriklere öncelik verilerek yapılandırılmıştır. Sprint Board üzerinde görünen etiketler frontend, backend, görüntü işleme, model, devops (sunucu vb. işler için) ve R&D şeklindedir.  
+  https://github.com/orgs/YZTA-Grup-162/projects/8  
+  
+Daily Scrum toplantıları, Google Meet ve Whatsapp üzerinden devam etmiştir. 
+  <details>
+  <summary><h3> Daly Scrum: Ekran Görüntüleri </h3></summary>  
+     
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Toplanti_3_1.png)
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Toplanti_3_2.png)
+   ![]()
+</details>
+
+**Sprint Board**
+
+![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Sprint_3.png) 
+
+  <details>
+  <summary><h3> Uygulama Durumu: Ekran Görüntüleri </h3></summary>  
+     
+   ![]()
+   ![]()  
+   ![]()  
+   ![]()    
+</details>
+
+**Sprint Review:**
+- Ekip üyeleri birbirini tebrik etti.
+- Birden fazla veri seti incelendikten sonra, model fine-tuning yapılarak eğitildi.
+- Sprint Review katılımcıları: Başak Dilara Çevik,Süleyman Kayyum Buberka, Enes Yıldırım, Hümeyra Betül Şahin, Muhammed Enes Güler
+
+**Sprint Retrospective:**
+- Spirntlerde bahsedilen özellikler eklendi ve proje başarıyla tamamlandı.
+- Ekip sprint sonunu kutladı.
+</details>  
 
 ## Model Dosyaları
 
