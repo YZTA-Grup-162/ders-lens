@@ -28,6 +28,8 @@ class ThermalManager:
         self.check_interval = check_interval
         self.monitoring = False
         self.thermal_throttling = False
+        self.temperature_history = []
+        self.monitor_thread = None
         self.cooling_strategies = {
             'reduce_batch_size': False,
             'reduce_workers': False,
@@ -39,19 +41,39 @@ class ThermalManager:
     def get_cpu_temperature(self):
         if platform.system() == "Windows":
             try:
+                import pythoncom
                 import wmi
-                c = wmi.WMI(namespace="root\\wmi")
-                temperature_info = c.MSAcpi_ThermalZoneTemperature()
-                if temperature_info:
-                    temp_kelvin = temperature_info[0].CurrentTemperature
-                    return (temp_kelvin / 10.0) - 273.15
+
+                # Initialize COM properly in thread
+                pythoncom.CoInitialize()
+                
+                try:
+                    c = wmi.WMI(namespace="root\\wmi")
+                    if not c:
+                        logger.warning("WMI namespace 'root\\wmi' not found")
+                        return None
+                    
+                    # Get CPU temperature using WMI
+                    if not hasattr(c, 'MSAcpi_ThermalZoneTemperature'):
+                        logger.warning("WMI class 'MSAcpi_ThermalZoneTemperature' not found")
+                        return None
+                    
+                    temperature_info = c.MSAcpi_ThermalZoneTemperature()
+                    if temperature_info:
+                        temp_kelvin = temperature_info[0].CurrentTemperature
+                        return (temp_kelvin / 10.0) - 273.15
+                finally:
+                    # Clean up COM
+                    pythoncom.CoUninitialize()
+                    
             except Exception as e:
-                logger.warning(f"Error getting Windows CPU temperature: {e}")
+                logger.debug(f"WMI temperature reading failed: {e}")
             
             # Fallback for Windows if WMI fails
             try:
-                cpu_percent = psutil.cpu_percent(interval=1)
-                return 40 + (cpu_percent * 0.5)  # Estimate based on CPU usage
+                cpu_percent = psutil.cpu_percent(interval=0.1)  # Reduced interval
+                # Estimate temperature based on CPU usage (rough approximation)
+                return 35 + (cpu_percent * 0.4)  # Conservative estimate
             except Exception as e:
                 logger.warning(f"Error estimating CPU temperature: {e}")
                 return None
@@ -150,9 +172,14 @@ class ThermalManager:
         temps = [t for t in [cpu_temp, gpu_temp] if t is not None]
         return max(temps) if temps else None
     def check_thermal_state(self):
+        # Safety check for initialization
+        if not hasattr(self, 'temperature_history'):
+            self.temperature_history = []
+            
         current_temp = self.get_current_temperature()
         if current_temp is None:
             return "unknown", []
+        
         self.temperature_history.append({
             'timestamp': time.time(),
             'temperature': current_temp
@@ -276,3 +303,51 @@ def create_thermal_safe_training_config():
         'gradient_accumulation_steps': 2,  # Simulate larger batches
         'save_checkpoint_every': 5,  # Save more frequently
     }
+    
+    def should_throttle(self):
+        """Check if we should throttle due to high temperatures"""
+        cpu_temp = self.get_cpu_temperature()
+        gpu_temp = self.get_gpu_temperature()
+        
+        max_temp = 0
+        if cpu_temp is not None:
+            max_temp = max(max_temp, cpu_temp)
+        if gpu_temp is not None:
+            max_temp = max(max_temp, gpu_temp)
+            
+        return max_temp > self.max_temp
+        
+    def start_monitoring(self):
+        """Start thermal monitoring in background"""
+        if self.monitoring:
+            return
+            
+        self.monitoring = True
+        self.monitor_thread = threading.Thread(target=self._monitor_loop, daemon=True)
+        self.monitor_thread.start()
+        
+    def stop_monitoring(self):
+        """Stop thermal monitoring"""
+        self.monitoring = False
+        if hasattr(self, 'monitor_thread') and self.monitor_thread:
+            self.monitor_thread.join(timeout=1)
+            
+    def _monitor_loop(self):
+        """Background monitoring loop"""
+        while self.monitoring:
+            try:
+                if self.should_throttle():
+                    logger.warning("Temperature threshold exceeded - consider reducing training intensity")
+                time.sleep(self.check_interval)
+            except Exception as e:
+                logger.error(f"Error in thermal monitoring: {e}")
+                time.sleep(self.check_interval)
+                
+    def get_status(self):
+        """Get current thermal status"""
+        return {
+            'cpu_temp': self.get_cpu_temperature(),
+            'gpu_temp': self.get_gpu_temperature(),
+            'monitoring': self.monitoring,
+            'should_throttle': self.should_throttle()
+        }

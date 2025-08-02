@@ -1,24 +1,39 @@
+
+
 import base64
 import io
 import json
 import logging
 import math
 import os
-from typing import Dict, List, Optional
+import time
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+# Set environment variables before importing OpenCV and MediaPipe
+os.environ['OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = ''
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import cv2
 import mediapipe as mp
 import numpy as np
 import torch
+import torch.nn as nn
+import torch.nn.functional as F
 import torchvision.transforms as transforms
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from PIL import Image
 from pydantic import BaseModel
 
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-app = FastAPI(title="Ders Lens AI Service", version="1.0.0")
+
+# Initialize FastAPI app
+app = FastAPI(title="DersLens AI Service - Enhanced", version="2.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

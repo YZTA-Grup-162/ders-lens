@@ -2,15 +2,18 @@
 Ders Lens Backend - FastAPI Application
 """
 from contextlib import asynccontextmanager
-from app.api import (auth, demo, enhanced_demo, predictions,
-                     student, teacher)
+
+from fastapi import FastAPI, HTTPException, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
+from app.api import auth, demo, enhanced_demo, predictions, student, teacher
 from app.api.websocket import (websocket_endpoint_student,
                                websocket_endpoint_teacher)
 from app.core.config import settings
 from app.core.database import Base, engine
-from fastapi import FastAPI, HTTPException, WebSocket
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("**Ders Lens API başlatılıyor...**")
@@ -60,7 +63,7 @@ async def analyze_frame_endpoint(request: dict):
     try:
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                "http://ai-service:8001/analyze/frame",
+                "http://localhost:8001/api/v1/analyze/frame",
                 json=request,
                 timeout=30.0
             )

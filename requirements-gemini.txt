@@ -1,0 +1,43 @@
+# DersLens Requirements - Gemini Integration
+# Core ML and CV
+torch>=2.0.0
+torchvision>=0.15.0
+opencv-python>=4.8.0
+mediapipe>=0.10.0
+onnxruntime-gpu>=1.15.0  # GPU support for ONNX models
+scikit-learn>=1.3.0
+numpy>=1.24.0
+pandas>=2.0.0
+pillow>=10.0.0
+
+# Gemini AI Integration
+google-generativeai>=0.3.0
+google-api-python-client>=2.100.0
+
+# Web Dashboard and UI
+plotly>=5.15.0
+seaborn>=0.12.0
+matplotlib>=3.7.0
+
+# Async and utilities
+asyncio-mqtt>=0.13.0
+aiohttp>=3.8.0
+python-dotenv>=1.0.0
+tqdm>=4.65.0
+
+# Data processing
+requests>=2.31.0
+jsonschema>=4.19.0
+
+# Additional dependencies for production
+uvicorn>=0.23.0  # For FastAPI if needed
+fastapi>=0.100.0  # For API endpoints
+websockets>=11.0  # For real-time communication
+redis>=4.6.0  # For caching and session management
+python-multipart>=0.0.6  # For file uploads
+
+# Development tools
+pytest>=7.4.0
+black>=23.7.0
+flake8>=6.0.0
+pre-commit>=3.3.0

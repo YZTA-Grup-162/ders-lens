@@ -2,6 +2,34 @@
 # version: '3.8'  # Docker Compose v2'de artık gerekli değil
 
 services:
+  # AI Service (Development)
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: ders-lens-ai-service-dev
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./ai-service:/app
+      - ./models_fer2013:/app/models_fer2013
+      - ./models_daisee:/app/models_daisee
+      - ./models_mendeley:/app/models_mendeley
+      - ./models_mpiigaze:/app/models_mpiigaze
+      - ./models_comprehensive_fixed:/app/models_comprehensive_fixed
+    environment:
+      - DEBUG=True
+      - MODEL_PATH=/app/models
+      # MediaPipe GPU disabling - set before process starts
+      - MEDIAPIPE_DISABLE_GPU=1
+      - GLOG_logtostderr=1
+      - GLOG_v=0
+      - CUDA_VISIBLE_DEVICES=""
+      - OPENCV_DNN_BACKEND_DEFAULT=0
+    restart: unless-stopped
+    networks:
+      - ders-lens-network
+
   # Backend API Service (Development)
   backend:
     build:
@@ -17,6 +45,11 @@ services:
       - DEBUG=True
       - DATABASE_URL=sqlite:///./ders_lens_dev.db
       - SECRET_KEY=dev-secret-key
+      - AI_SERVICE_URL=http://ai-service:5000
+      - BASIC_AUTH_USERNAME=devuser
+      - BASIC_AUTH_PASSWORD=devpass
+    depends_on:
+      - ai-service
     restart: unless-stopped
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     networks:
@@ -26,7 +59,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: ders-lens-frontend-dev
     ports:
       - "3001:3000"

@@ -158,7 +158,7 @@ class HighFidelityAttentionEngine:
             'mendeley_ensemble': False,
             'onnx_emotion': False
         }
-        logger.info("🔍 Loading YOUR trained models into DersLens main application...")
+        logger.info("🔍 Loading trained models into DersLens main application...")
         possible_base_paths = [
             Path("d:/ders-lens"),
             Path("/app"),
@@ -175,7 +175,7 @@ class HighFidelityAttentionEngine:
                 logger.info(f"🎯 Found models base directory: {base_dir}")
                 break
         if base_dir is None:
-            logger.warning("⚠️ Could not find your trained models directories")
+            logger.warning("⚠️ Could not find trained models directories")
             self._setup_fallback_models()
             return
         self._load_daisee_model(base_dir)
@@ -185,7 +185,7 @@ class HighFidelityAttentionEngine:
         self._load_onnx_model(base_dir)
         loaded_count = sum(self.model_status.values())
         self.model_version = f"3.0.0-integrated-{loaded_count}models"
-        logger.info(f"🚀 DersLens loaded with {loaded_count}/5 of YOUR trained models!")
+        logger.info(f"🚀 DersLens loaded with {loaded_count}/5 trained models!")
     def _load_daisee_model(self, base_dir):
         try:
             from .model_architecture_fix import (DAiSEEAttentionModelFixed,
@@ -306,7 +306,7 @@ class HighFidelityAttentionEngine:
         except Exception as e:
             logger.error(f"❌ Failed to load ONNX model: {e}")
     def _setup_fallback_models(self):
-        logger.warning("🔄 Setting up fallback models - your trained models not accessible")
+        logger.warning("Setting up fallback models")
         try:
             attention_model_path = self.models_dir / "local_attention_model_random_forest.pkl"
             attention_scaler_path = self.models_dir / "local_scaler_random_forest.pkl"

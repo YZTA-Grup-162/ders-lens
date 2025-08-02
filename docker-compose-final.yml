@@ -1,0 +1,127 @@
+services:
+  # AI Service
+  ai-service:
+    build:
+      context: .
+      dockerfile: ./ai-service/Dockerfile
+    container_name: derslens-ai-service
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./models:/app/models
+    environment:
+      - DEBUG=False
+      - MODEL_PATH=/app/models
+      - BASIC_AUTH_USERNAME=admin
+      - BASIC_AUTH_PASSWORD=SuperSecret123
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    restart: unless-stopped
+    networks:
+      - derslens-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend API Service
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    container_name: derslens-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - backend_uploads:/app/uploads
+    environment:
+      - DEBUG=False
+      - DATABASE_URL=postgresql://postgres:password@db:5432/ders_lens
+      - SECRET_KEY=example_secret_key
+      - AI_SERVICE_URL=http://ai-service:5000
+      - BASIC_AUTH_USERNAME=admin
+      - BASIC_AUTH_PASSWORD=SuperSecret123
+    depends_on:
+      - db
+      - ai-service
+    restart: unless-stopped
+    networks:
+      - derslens-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: derslens-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - derslens-network
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: derslens-db
+    environment:
+      - POSTGRES_DB=ders_lens
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - derslens-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: derslens-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - derslens-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_uploads:
+    driver: local
+
+networks:
+  derslens-network:
+    driver: bridge
+    name: derslens-network

@@ -1,11 +1,35 @@
 # version: '3.8'  # Docker Compose v2'de artık gerekli değil
 
 services:
+  # AI Service
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: ders-lens-ai-service
+    ports:
+      - "5000:5000"
+    volumes:
+      - ai_models:/app/models
+      - ./models_fer2013:/app/models_fer2013
+      - ./models_daisee:/app/models_daisee
+      - ./models_mendeley:/app/models_mendeley
+      - ./models_mpiigaze:/app/models_mpiigaze
+      - ./models_comprehensive_fixed:/app/models_comprehensive_fixed
+    environment:
+      - DEBUG=False
+      - MODEL_PATH=/app/models
+      - MEDIAPIPE_DISABLE_GPU=1
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    restart: unless-stopped
+    networks:
+      - ders-lens-network
+
   # Backend API Service
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./backend/Dockerfile
     container_name: ders-lens-backend
     ports:
       - "8000:8000"
@@ -17,8 +41,10 @@ services:
       - DEBUG=True
       - DATABASE_URL=postgresql://postgres:password@db:5432/ders_lens
       - SECRET_KEY=PRODUCTION_SECRET_KEY
+      - AI_SERVICE_URL=http://ai-service:5000
     depends_on:
       - db
+      - ai-service
     restart: unless-stopped
     networks:
       - ders-lens-network
@@ -26,8 +52,8 @@ services:
   # Frontend Service
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./frontend/Dockerfile
     container_name: ders-lens-frontend
     ports:
       - "3000:80"
@@ -53,7 +79,6 @@ services:
     networks:
       - ders-lens-network
 
-  # Redis for caching (optional)
   redis:
     image: redis:7-alpine
     container_name: ders-lens-redis
@@ -70,6 +95,7 @@ volumes:
   redis_data:
   backend_uploads:
   backend_models:
+  ai_models:
 
 networks:
   ders-lens-network:

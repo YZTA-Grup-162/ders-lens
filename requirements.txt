@@ -31,7 +31,6 @@ pathlib>=1.0.0
 typing-extensions>=4.0.0
 
 # Optional: For enhanced functionality
-streamlit>=1.25.0  # For web interface
 fastapi>=0.95.0    # For API deployment
 uvicorn>=0.18.0    # ASGI server
 python-multipart>=0.0.5  # For file uploads

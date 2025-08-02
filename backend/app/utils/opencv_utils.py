@@ -70,8 +70,7 @@ class AttentionDetector:
             landmarks_2d.append([x, y])
             landmarks_3d.append([x, y, landmark.z])
         
-        # Calculate head pose (simplified)
-        # This is a basic implementation - can be improved
+        
         nose_tip = landmarks_2d[1]
         chin = landmarks_2d[175]
         

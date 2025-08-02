@@ -147,15 +147,15 @@ export const EnhancedLiveCamera: React.FC = () => {
           };
           
           setConnected(true);
-          console.log('📹 Camera connection set to true');
+          console.log('Camera connection set to true');
         } else {
-          console.error('📹 Video ref is null!');
+          console.error('Video ref is null!');
         }
       } catch (err) {
-        console.error('❌ Camera error details:', err);
+        console.error('Camera error details:', err);
         if (err instanceof Error) {
-          console.error('❌ Error name:', err.name);
-          console.error('❌ Error message:', err.message);
+          console.error('Error name:', err.name);
+          console.error('Error message:', err.message);
         }
         setError('Kameraya erişim sağlanamadı. Lütfen izinleri kontrol edin.');
       }
@@ -204,8 +204,7 @@ export const EnhancedLiveCamera: React.FC = () => {
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Debug: Log video dimensions and check if video is playing
-      console.log('🎥 Video Debug:', {
+      console.log('Video Debug:', {
         videoWidth: video.videoWidth,
         videoHeight: video.videoHeight,
         canvasWidth: canvas.width,

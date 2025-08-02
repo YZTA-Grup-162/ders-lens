@@ -1,21 +1,17 @@
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   BarChart3,
   Brain,
   Camera,
   CheckCircle,
   Eye,
-  Lightbulb,
-  Monitor,
-  Play,
   Shield,
   Sparkles,
   Target,
   TrendingUp,
-  Users,
   Zap
 } from 'lucide-react';
-import React, { useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import { Layout } from '../components/layout/layout';
@@ -386,7 +382,7 @@ const TurkishLandingPage: React.FC = () => {
                   DersLens AI Teknolojisini Hemen Deneyin
                 </h3>
                 <p className="text-xl text-gray-300 mb-8">
-                  Gerçek zamanlı analiz, türkçe arayüz ve güvenli veri işleme
+                  Gerçek zamanlı analiz, Türkçe arayüz ve güvenli veri işleme
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">

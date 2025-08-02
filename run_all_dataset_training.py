@@ -3,16 +3,19 @@ Master Script for All Dataset Training
 Runs all specialized dataset training scripts and provides comprehensive results.
 Each dataset is trained separately with optimized parameters for 80%+ validation accuracy.
 """
-import os
-import sys
-import logging
-import subprocess
 import json
+import logging
+import os
+import subprocess
+import sys
 import time
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 import pandas as pd
+
 from thermal_management import ThermalManager
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -33,8 +36,8 @@ class DatasetTrainingManager:
                 'model_dir': 'models_daisee'
             },
             'fer2013': {
-                'script': 'fer2013_emotion_training.py',
-                'description': 'FER2013 Emotion Recognition',
+                'script': 'train_fer2013_pytorch.py',
+                'description': 'FER2013 Emotion Recognition (PyTorch)',
                 'type': 'image',
                 'target_acc': 80.0,
                 'model_dir': 'models_fer2013'
@@ -70,7 +73,7 @@ class DatasetTrainingManager:
         available_datasets = {}
         dataset_paths = {
             'daisee': 'datasets/daisee/Labels/labels.csv',
-            'fer2013': 'datasets/fer_2013/train',
+            'fer2013': 'datasets/fer2013/train',
             'ravdess': 'datasets/ravdess',
             'mendeley': 'datasets/mendeley/Students Attention Detection Dataset/attention_detection_dataset_v1.csv',
             'mpiigaze': 'datasets/MPIIGaze/Data'
