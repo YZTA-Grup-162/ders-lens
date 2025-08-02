@@ -1,168 +1,58 @@
 """
 Student API endpoints
 """
-
-from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from sqlalchemy.orm import Session
+from fastapi import APIRouter
 from pydantic import BaseModel
-from datetime import datetime
+from typing import List, Dict, Any
 
-from app.core.database import get_db
-from app.core.auth import verify_token
+router = APIRouter(prefix="/student", tags=["student"])
 
-router = APIRouter()
+class StudentProfile(BaseModel):
+    id: str
+    name: str
+    email: str
+    class_id: str
 
+class AttentionData(BaseModel):
+    timestamp: int
+    attention_score: float
+    emotion: str
+    engagement_level: float
 
-# Pydantic models
-class SessionCreate(BaseModel):
-    session_name: str
-    teacher_id: Optional[int] = None
+@router.get("/profile", response_model=StudentProfile)
+async def get_student_profile():
+    """
+    Get student profile information
+    """
+    return StudentProfile(
+        id="student-123",
+        name="Test Student",
+        email="student@test.com",
+        class_id="class-456"
+    )
 
-
-class SessionResponse(BaseModel):
-    id: int
-    session_name: str
-    start_time: datetime
-    is_active: bool
-    
-    class Config:
-        from_attributes = True
-
-
-class AttentionScoreResponse(BaseModel):
-    attention_level: float
-    engagement_level: Optional[float]
-    confidence: float
-    timestamp: datetime
-    distraction_type: Optional[str]
-
-
-class FeedbackResponse(BaseModel):
-    feedback_type: str
-    message: str
-    suggestions: Optional[str]
-    created_at: datetime
-
-
-@router.post("/session/start", response_model=SessionResponse)
-async def start_session(
-    session_data: SessionCreate,
-    current_user: str = Depends(verify_token),
-    db: Session = Depends(get_db)
-):
-    """Start a new learning session"""
-    # TODO: Implement session creation logic
-    return {
-        "id": 1,
-        "session_name": session_data.session_name,
-        "start_time": datetime.now(),
-        "is_active": True
-    }
-
-
-@router.post("/session/{session_id}/end")
-async def end_session(
-    session_id: int,
-    current_user: str = Depends(verify_token),
-    db: Session = Depends(get_db)
-):
-    """End a learning session"""
-    # TODO: Implement session ending logic
-    return {"message": "Session ended successfully"}
-
-
-@router.post("/video/frame")
-async def process_video_frame(
-    file: UploadFile = File(...),
-    session_id: int = None,
-    current_user: str = Depends(verify_token)
-):
-    """Process a video frame for attention analysis"""
-    # TODO: Implement video frame processing
-    # 1. Validate file type and size
-    # 2. Process with OpenCV
-    # 3. Run AI model for attention detection
-    # 4. Save results to database
-    # 5. Return attention score
-    
-    return {
-        "attention_level": 0.85,
-        "engagement_level": 0.78,
-        "confidence": 0.92,
-        "face_detected": True,
-        "distraction_type": None
-    }
-
-
-@router.get("/attention/score", response_model=AttentionScoreResponse)
-async def get_attention_score(
-    session_id: int,
-    current_user: str = Depends(verify_token),
-    db: Session = Depends(get_db)
-):
-    """Get latest attention score for a session"""
-    # TODO: Implement get attention score logic
-    return {
-        "attention_level": 0.75,
-        "engagement_level": 0.80,
-        "confidence": 0.88,
-        "timestamp": datetime.now(),
-        "distraction_type": None
-    }
-
-
-@router.get("/attention/history")
-async def get_attention_history(
-    session_id: int,
-    limit: int = 100,
-    current_user: str = Depends(verify_token),
-    db: Session = Depends(get_db)
-):
-    """Get attention score history for a session"""
-    # TODO: Implement attention history logic
-    return {
-        "session_id": session_id,
-        "scores": [
-            {
-                "attention_level": 0.85,
-                "timestamp": datetime.now(),
-                "confidence": 0.9
-            }
-        ]
-    }
-
-
-@router.get("/feedback", response_model=List[FeedbackResponse])
-async def get_feedback(
-    session_id: int,
-    current_user: str = Depends(verify_token),
-    db: Session = Depends(get_db)
-):
-    """Get personalized feedback for a session"""
-    # TODO: Implement feedback generation logic
+@router.get("/attention", response_model=List[AttentionData])
+async def get_attention_data():
+    """
+    Get student attention data
+    """
     return [
-        {
-            "feedback_type": "attention",
-            "message": "Bu derste dikkat seviyen %85 olarak ölçüldü. Harika iş!",
-            "suggestions": "Daha iyi odaklanmak için sessiz bir ortam tercih edebilirsin.",
-            "created_at": datetime.now()
-        }
+        AttentionData(
+            timestamp=1643723400,
+            attention_score=0.8,
+            emotion="happy",
+            engagement_level=0.75
+        )
     ]
 
-
-@router.get("/sessions", response_model=List[SessionResponse])
-async def get_user_sessions(
-    current_user: str = Depends(verify_token),
-    db: Session = Depends(get_db)
-):
-    """Get all sessions for current user"""
-    # TODO: Implement get user sessions logic
-    return [
-        {
-            "id": 1,
-            "session_name": "Matematik Dersi",
-            "start_time": datetime.now(),
-            "is_active": False
-        }
-    ]
+@router.get("/dashboard")
+async def get_dashboard_data():
+    """
+    Get student dashboard data
+    """
+    return {
+        "total_classes": 12,
+        "average_attention": 0.78,
+        "improvement_rate": 0.15,
+        "recent_activities": []
+    }
