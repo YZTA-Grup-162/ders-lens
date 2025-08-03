@@ -119,7 +119,7 @@ Daily Scrum toplantıları, Google Meet ve Whatsapp üzerinden devam etmiştir.
      
    ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Toplanti_3_1.png)
    ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Toplanti_3_2.png)
-   ![]()
+   
 </details>
 
 **Sprint Board**
