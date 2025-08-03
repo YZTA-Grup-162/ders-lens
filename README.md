@@ -129,10 +129,11 @@ Daily Scrum toplantıları, Google Meet ve Whatsapp üzerinden devam etmiştir.
   <details>
   <summary><h3> Uygulama Durumu: Ekran Görüntüleri </h3></summary>  
      
-   ![]()
-   ![]()  
-   ![]()  
-   ![]()    
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Final_1.png)
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Final_2.png)  
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Final_3.png)  
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Final_4.png)    
+   ![](https://github.com/YZTA-Grup-162/ders-lens/blob/main/assets/Uygulama_Final_5.png)    
 </details>
 
 **Sprint Review:**
