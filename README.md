@@ -496,3 +496,4 @@ pause
 ---
 
 *Çevrimiçi eğitim için computer vision tabanlı dikkat takip sistemi.*
+##derslens
